@@ -1,42 +1,40 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input, button {
+  margin: 5px;
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ccc;
+}
+
+img {
+  width: 150px;
+  height: auto;
+}
+
+@media print {
+  form, #generate-estimate, #download-pdf, #clear-estimate {
+    display: none;
   }
-  
-  form {
-    margin-bottom: 20px;
-  }
-  
-  input, button {
-    margin: 5px;
-    padding: 5px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 8px;
-    text-align: left;
-    border: 1px solid #ccc;
-  }
-  
+
   img {
-    width: 60px;
+    max-width: 200px;
     height: auto;
   }
-  
-  /* Hide form and button during print */
-  @media print {
-    form, #generate-estimate {
-      display: none;
-    }
-  
-    img {
-      max-width: 100px;
-      height: auto;
-    }
-  }
-  
+}
