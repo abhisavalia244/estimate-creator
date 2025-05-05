@@ -52,7 +52,7 @@ let items = [];
   btn.addEventListener("click", () => content.classList.toggle("show"));
 });
 
-// Close dropdowns when clicking outside
+// Close all dropdowns if click outside
 window.addEventListener("click", e => {
   if (!e.target.closest(".dropdown")) {
     document.querySelectorAll(".dropdown-content")
@@ -73,7 +73,6 @@ window.addEventListener("DOMContentLoaded", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Gather checked values
   const getChecked = content =>
     Array.from(content.querySelectorAll("input:checked"))
          .map(cb => cb.value);
@@ -99,14 +98,14 @@ form.addEventListener("submit", e => {
   });
 
   localStorage.setItem("estimateItems", JSON.stringify(items));
-  form.reset();  // uncheck all
+  form.reset();
 });
 
-// Add one row
+// Create a row for each item
 function addRowToTable(item) {
   const row = document.createElement("tr");
   row.innerHTML = `
-    <td><img src="${item.image}" alt="${item.name}"></td>
+    <td><img src="${item.image}" alt="${item.name}" /></td>
     <td>${item.name}</td>
     <td><button class="delete-btn">Delete</button></td>
   `;
@@ -119,10 +118,10 @@ function addRowToTable(item) {
   });
 }
 
-// Print view
+// Print preview
 generateBtn.addEventListener("click", () => window.print());
 
-// Clear all
+// Clear all selections
 clearBtn.addEventListener("click", () => {
   if (confirm("Clear all selections?")) {
     items = [];
@@ -131,19 +130,49 @@ clearBtn.addEventListener("click", () => {
   }
 });
 
-// Download PDF (hides delete buttons during render)
-downloadBtn.addEventListener("click", () => {
+// DOWNLOAD MULTI-PAGE PDF
+downloadBtn.addEventListener("click", async () => {
+  // Hide delete buttons & action column
   const deleteBtns = document.querySelectorAll(".delete-btn");
-  deleteBtns.forEach(btn => btn.style.display = "none");
+  const actionThs  = document.querySelectorAll('#estimate-table th:nth-child(3)');
+  const actionTds  = document.querySelectorAll('#estimate-table td:nth-child(3)');
 
+  deleteBtns.forEach(b => b.style.display = 'none');
+  actionThs.forEach(el => el.style.display = 'none');
+  actionTds.forEach(el => el.style.display = 'none');
+
+  // Capture the estimate-content as a canvas
+  const element = document.getElementById("estimate-content");
+  const canvas  = await html2canvas(element, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  // Setup PDF
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.html(document.getElementById("estimate-content"), {
-    x: 10, y: 10,
-    html2canvas: { scale: 0.5 },
-    callback: pdf => {
-      pdf.save("estimate.pdf");
-      deleteBtns.forEach(btn => btn.style.display = "");
-    }
-  });
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth  = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  const imgProps  = pdf.getImageProperties(imgData);
+  const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // Add first page
+  pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+  heightLeft -= pdfHeight;
+
+  // Add remaining pages
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+  }
+
+  pdf.save("estimate.pdf");
+
+  // Restore buttons & column
+  deleteBtns.forEach(b => b.style.display = '');
+  actionThs.forEach(el => el.style.display = '');
+  actionTds.forEach(el => el.style.display = '');
 });
