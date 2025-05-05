@@ -9,18 +9,20 @@
   <h1>Door &amp; Window Estimate Generator</h1>
 
   <form id="product-form">
-    <div class="form-group">
-      <label for="doorStyle">Door Style:</label>
-      <select id="doorStyle">
-        <option value="">—Select Door Style—</option>
-        <option value="alki">Alki</option>
-        <option value="berkely">Berkely</option>
-        <option value="whitmen">Whitmen</option>
-        <option value="mercer">Mercer</option>
-        <option value="kingston">Kingston</option>
-      </select>
+    <!-- Multi-select checkbox dropdown for Door Styles -->
+    <div class="form-group dropdown">
+      <label>Door Styles:</label>
+      <button type="button" id="doorDropdownBtn">Select Door Styles ▼</button>
+      <div class="dropdown-content" id="doorDropdownContent">
+        <label><input type="checkbox" value="alki"> Alki</label>
+        <label><input type="checkbox" value="berkely"> Berkely</label>
+        <label><input type="checkbox" value="whitmen"> Whitmen</label>
+        <label><input type="checkbox" value="mercer"> Mercer</label>
+        <label><input type="checkbox" value="kingston"> Kingston</label>
+      </div>
     </div>
 
+    <!-- Other single-select dropdowns remain unchanged -->
     <div class="form-group">
       <label for="baseboard">Baseboard &amp; Casing:</label>
       <select id="baseboard">
@@ -33,7 +35,7 @@
     <div class="form-group">
       <label for="doorHardware">Door Hardware:</label>
       <select id="doorHardware">
-        <option value="">—Select Door Hardware—</option>
+        <option value="">—Select Hardware—</option>
         <option value="satinHinge">Satin Hinge</option>
         <option value="blackHinge">Black Hinge</option>
         <option value="crossflowLeverBlack">Cross-Flow Lever Black</option>
@@ -43,7 +45,7 @@
     <div class="form-group">
       <label for="entryHandle">Front Entry Handle Set:</label>
       <select id="entryHandle">
-        <option value="">—Select Entry Handle—</option>
+        <option value="">—Select Handle Set—</option>
         <option value="londonEntrySet">London Entry Set</option>
         <option value="montereyEntrySet">Monterey Entry Set</option>
       </select>

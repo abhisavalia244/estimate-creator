@@ -1,4 +1,4 @@
-// In-memory “database” of products
+// In-memory catalog
 const catalog = {
   doorStyles: {
     alki:            { name: 'Alki Door Style',           image: 'images/alki.jpg' },
@@ -22,15 +22,28 @@ const catalog = {
   }
 };
 
-const form        = document.getElementById("product-form");
-const tableBody   = document.querySelector("#estimate-table tbody");
-const generateBtn = document.getElementById("generate-estimate");
-const downloadBtn = document.getElementById("download-pdf");
-const clearBtn    = document.getElementById("clear-estimate");
+const form            = document.getElementById("product-form");
+const tableBody       = document.querySelector("#estimate-table tbody");
+const generateBtn     = document.getElementById("generate-estimate");
+const downloadBtn     = document.getElementById("download-pdf");
+const clearBtn        = document.getElementById("clear-estimate");
+const doorBtn         = document.getElementById("doorDropdownBtn");
+const doorContent     = document.getElementById("doorDropdownContent");
 
 let items = [];
 
-// Load saved selections on page load
+// Toggle dropdown
+doorBtn.addEventListener("click", () =>
+  doorContent.classList.toggle("show")
+);
+// Close if clicked outside
+window.addEventListener("click", e => {
+  if (!doorBtn.contains(e.target) && !doorContent.contains(e.target)) {
+    doorContent.classList.remove("show");
+  }
+});
+
+// Load saved
 window.addEventListener("DOMContentLoaded", () => {
   const saved = localStorage.getItem("estimateItems");
   if (saved) {
@@ -42,14 +55,19 @@ window.addEventListener("DOMContentLoaded", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Gather selections
-  const picks = [];
-  const ds = document.getElementById("doorStyle").value;
+  // Gather checked door styles
+  const selectedDoors = Array.from(
+    doorContent.querySelectorAll("input[type=checkbox]:checked")
+  ).map(cb => cb.value);
+
+  // Gather single-selects
   const bb = document.getElementById("baseboard").value;
   const dh = document.getElementById("doorHardware").value;
   const eh = document.getElementById("entryHandle").value;
 
-  if (ds) picks.push(catalog.doorStyles[ds]);
+  // Build pick list
+  let picks = [];
+  selectedDoors.forEach(d => picks.push(catalog.doorStyles[d]));
   if (bb) picks.push(catalog.baseboard[bb]);
   if (dh) picks.push(catalog.doorHardware[dh]);
   if (eh) picks.push(catalog.entryHandle[eh]);
@@ -58,7 +76,7 @@ form.addEventListener("submit", e => {
     return alert("Please select at least one item.");
   }
 
-  // Add each picked item
+  // Add each
   picks.forEach(item => {
     items.push(item);
     addRowToTable(item);
@@ -66,6 +84,8 @@ form.addEventListener("submit", e => {
 
   localStorage.setItem("estimateItems", JSON.stringify(items));
   form.reset();
+  // clear checkboxes
+  doorContent.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
 });
 
 function addRowToTable(item) {
@@ -76,7 +96,6 @@ function addRowToTable(item) {
     <td><button class="delete-btn">Delete</button></td>
   `;
   tableBody.appendChild(row);
-
   row.querySelector(".delete-btn").addEventListener("click", () => {
     row.remove();
     items = items.filter(i => i.name !== item.name);
@@ -84,27 +103,20 @@ function addRowToTable(item) {
   });
 }
 
-// Print preview
+// Print, Clear, Download
 generateBtn.addEventListener("click", () => window.print());
-
-// Clear all selections
 clearBtn.addEventListener("click", () => {
-  if (confirm("Are you sure you want to clear all selections?")) {
+  if (confirm("Clear all selections?")) {
     items = [];
     tableBody.innerHTML = "";
     localStorage.removeItem("estimateItems");
   }
 });
-
-// Download as PDF
 downloadBtn.addEventListener("click", () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-
   doc.html(document.getElementById("estimate-content"), {
-    x: 10,
-    y: 10,
-    html2canvas: { scale: 0.5 },
+    x: 10, y: 10, html2canvas: { scale: 0.5 },
     callback: pdf => pdf.save("estimate.pdf")
   });
 });
