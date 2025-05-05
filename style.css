@@ -34,12 +34,11 @@ button {
   overflow-y: auto;
 }
 
-/* Show it when .show is added */
+/* Show when .show is added */
 .dropdown-content.show {
   display: block;
 }
 
-/* Each checkbox line */
 .dropdown-content label {
   display: block;
   margin-bottom: 5px;
@@ -66,8 +65,14 @@ img {
   height: auto;
 }
 
+/* PRINT: hide controls & action column */
 @media print {
   form, .actions {
+    display: none;
+  }
+  /* hide the “Action” column entirely */
+  th:nth-child(3),
+  td:nth-child(3) {
     display: none;
   }
   img {

@@ -1,37 +1,37 @@
 // In-memory catalog
 const catalog = {
   doorStyles: {
-    alki: { name: 'Alki Door Style',        image: 'images/alki.jpg' },
-    berkely: { name: 'Berkely Door Style',  image: 'images/berkely.jpg' },
-    whitmen: { name: 'Whitmen Door Style',  image: 'images/whitmen.jpg' },
-    mercer: { name: 'Mercer Door Style',    image: 'images/mercer.jpg' },
-    kingston: { name: 'Kingston Door Style',image: 'images/kingston.jpg' },
+    alki:            { name: 'Alki Door Style',        image: 'images/alki.jpg' },
+    berkely:         { name: 'Berkely Door Style',     image: 'images/berkely.jpg' },
+    whitmen:         { name: 'Whitmen Door Style',     image: 'images/whitmen.jpg' },
+    mercer:          { name: 'Mercer Door Style',      image: 'images/mercer.jpg' },
+    kingston:        { name: 'Kingston Door Style',    image: 'images/kingston.jpg' },
   },
   baseboard: {
-    mdf423: { name: 'MDF423 Baseboard',     image: 'images/mdf423.jpg' },
-    mdf1024:{ name: 'MDF1024 Baseboard',    image: 'images/mdf1024.jpg' },
+    mdf423:          { name: 'MDF423 Baseboard',       image: 'images/mdf423.jpg' },
+    mdf1024:         { name: 'MDF1024 Baseboard',      image: 'images/mdf1024.jpg' },
   },
   doorHardware: {
-    satinHinge: { name: 'Satin Hinge',               image: 'images/satin_hinge.jpg' },
-    blackHinge: { name: 'Black Hinge',               image: 'images/black_hinge.jpg' },
+    satinHinge:      { name: 'Satin Hinge',            image: 'images/satin_hinge.jpg' },
+    blackHinge:      { name: 'Black Hinge',            image: 'images/black_hinge.jpg' },
     crossflowLeverBlack: {
       name: 'Cross-Flow Lever Black',
       image: 'images/crossflow_lever_black.jpg'
     },
   },
   entryHandle: {
-    londonEntrySet: { name: 'London Entry Set',     image: 'images/london_entryset.jpg' },
-    montereyEntrySet:{ name: 'Monterey Entry Set',  image: 'images/monterey_entryset.jpg' },
+    londonEntrySet:  { name: 'London Entry Set',       image: 'images/london_entryset.jpg' },
+    montereyEntrySet:{ name: 'Monterey Entry Set',     image: 'images/monterey_entryset.jpg' },
   }
 };
 
-const form        = document.getElementById("product-form");
-const tableBody   = document.querySelector("#estimate-table tbody");
-const generateBtn = document.getElementById("generate-estimate");
-const downloadBtn = document.getElementById("download-pdf");
-const clearBtn    = document.getElementById("clear-estimate");
+const form         = document.getElementById("product-form");
+const tableBody    = document.querySelector("#estimate-table tbody");
+const generateBtn  = document.getElementById("generate-estimate");
+const downloadBtn  = document.getElementById("download-pdf");
+const clearBtn     = document.getElementById("clear-estimate");
 
-// Dropdown buttons & contents
+// Dropdown triggers & contents
 const doorBtn      = document.getElementById("doorDropdownBtn");
 const doorContent  = document.getElementById("doorDropdownContent");
 const baseBtn      = document.getElementById("baseboardDropdownBtn");
@@ -43,16 +43,20 @@ const entryContent = document.getElementById("entryDropdownContent");
 
 let items = [];
 
-// Toggle each dropdown
-doorBtn.addEventListener("click", () => doorContent.classList.toggle("show"));
-baseBtn.addEventListener("click", () => baseContent.classList.toggle("show"));
-hwBtn.addEventListener("click",   () => hwContent.classList.toggle("show"));
-entryBtn.addEventListener("click",() => entryContent.classList.toggle("show"));
+// Toggle dropdowns
+[ [doorBtn, doorContent],
+  [baseBtn, baseContent],
+  [hwBtn, hwContent],
+  [entryBtn, entryContent]
+].forEach(([btn, content]) => {
+  btn.addEventListener("click", () => content.classList.toggle("show"));
+});
 
-// Close all if click outside
+// Close dropdowns when clicking outside
 window.addEventListener("click", e => {
   if (!e.target.closest(".dropdown")) {
-    document.querySelectorAll(".dropdown-content").forEach(dc => dc.classList.remove("show"));
+    document.querySelectorAll(".dropdown-content")
+      .forEach(dc => dc.classList.remove("show"));
   }
 });
 
@@ -69,16 +73,16 @@ window.addEventListener("DOMContentLoaded", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Gather checks
+  // Gather checked values
   const getChecked = content =>
-    Array.from(content.querySelectorAll("input:checked")).map(cb => cb.value);
+    Array.from(content.querySelectorAll("input:checked"))
+         .map(cb => cb.value);
 
   const doors    = getChecked(doorContent);
   const bases    = getChecked(baseContent);
   const hardware = getChecked(hwContent);
   const entries  = getChecked(entryContent);
 
-  // Build selection array
   let picks = [];
   doors.forEach(key => picks.push(catalog.doorStyles[key]));
   bases.forEach(key => picks.push(catalog.baseboard[key]));
@@ -89,17 +93,16 @@ form.addEventListener("submit", e => {
     return alert("Please select at least one item.");
   }
 
-  // Add to table & store
   picks.forEach(item => {
     items.push(item);
     addRowToTable(item);
   });
 
   localStorage.setItem("estimateItems", JSON.stringify(items));
-  form.reset(); // unchecks checkboxes
+  form.reset();  // uncheck all
 });
 
-// Create a row for each item
+// Add one row
 function addRowToTable(item) {
   const row = document.createElement("tr");
   row.innerHTML = `
@@ -116,7 +119,7 @@ function addRowToTable(item) {
   });
 }
 
-// Print preview
+// Print view
 generateBtn.addEventListener("click", () => window.print());
 
 // Clear all
@@ -128,13 +131,19 @@ clearBtn.addEventListener("click", () => {
   }
 });
 
-// Download PDF
+// Download PDF (hides delete buttons during render)
 downloadBtn.addEventListener("click", () => {
+  const deleteBtns = document.querySelectorAll(".delete-btn");
+  deleteBtns.forEach(btn => btn.style.display = "none");
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.html(document.getElementById("estimate-content"), {
     x: 10, y: 10,
     html2canvas: { scale: 0.5 },
-    callback: pdf => pdf.save("estimate.pdf")
+    callback: pdf => {
+      pdf.save("estimate.pdf");
+      deleteBtns.forEach(btn => btn.style.display = "");
+    }
   });
 });
