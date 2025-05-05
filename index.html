@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Estimate Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Estimate Generator</h1>
+
+  <form id="product-form">
+    <input type="text" id="sku" placeholder="SKU" required />
+    <input type="text" id="name" placeholder="Product Name" required />
+    <input type="number" id="price" placeholder="Price" step="0.01" required />
+    <input type="number" id="quantity" placeholder="Quantity" required />
+    <input type="file" id="image" accept="image/*" required />
+    <button type="submit">Add Item</button>
+  </form>
+
+  <table id="estimate-table" border="1">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>SKU</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3 id="grand-total">Grand Total: $0.00</h3>
+
+  <button id="generate-estimate">Generate Estimate</button>
+  <button id="clear-estimate">Clear Estimate</button>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
