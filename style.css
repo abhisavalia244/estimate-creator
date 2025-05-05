@@ -3,38 +3,46 @@ body {
   margin: 20px;
 }
 
-form {
+h1 {
   margin-bottom: 20px;
 }
 
-input, button {
-  margin: 5px;
-  padding: 5px;
+.form-group {
+  margin-bottom: 10px;
+}
+
+select, button {
+  padding: 6px;
+  margin-left: 10px;
+}
+
+.actions {
+  margin-top: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
 th, td {
   padding: 10px;
-  text-align: left;
   border: 1px solid #ccc;
+  text-align: center;
 }
 
 img {
-  width: 150px;
+  width: 200px;
   height: auto;
 }
 
+/* Print styling */
 @media print {
-  form, #generate-estimate, #download-pdf, #clear-estimate {
+  form, .actions {
     display: none;
   }
-
   img {
-    max-width: 200px;
-    height: auto;
+    max-width: 250px;
   }
 }

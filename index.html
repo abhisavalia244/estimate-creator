@@ -2,36 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Estimate Generator</title>
+  <title>Door &amp; Window Estimate Generator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Estimate Generator</h1>
+  <h1>Door &amp; Window Estimate Generator</h1>
 
   <form id="product-form">
-    <input type="text" id="sku" placeholder="SKU" required />
-    <input type="text" id="name" placeholder="Product Description" required />
-    <input type="file" id="image" accept="image/*" required />
-    <button type="submit">Add Item</button>
+    <div class="form-group">
+      <label for="doorStyle">Door Style:</label>
+      <select id="doorStyle">
+        <option value="">—Select Door Style—</option>
+        <option value="alki">Alki</option>
+        <option value="berkely">Berkely</option>
+        <option value="whitmen">Whitmen</option>
+        <option value="mercer">Mercer</option>
+        <option value="kingston">Kingston</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="baseboard">Baseboard &amp; Casing:</label>
+      <select id="baseboard">
+        <option value="">—Select Baseboard—</option>
+        <option value="mdf423">MDF423</option>
+        <option value="mdf1024">MDF1024</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="doorHardware">Door Hardware:</label>
+      <select id="doorHardware">
+        <option value="">—Select Door Hardware—</option>
+        <option value="satinHinge">Satin Hinge</option>
+        <option value="blackHinge">Black Hinge</option>
+        <option value="crossflowLeverBlack">Cross-Flow Lever Black</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="entryHandle">Front Entry Handle Set:</label>
+      <select id="entryHandle">
+        <option value="">—Select Entry Handle—</option>
+        <option value="londonEntrySet">London Entry Set</option>
+        <option value="montereyEntrySet">Monterey Entry Set</option>
+      </select>
+    </div>
+
+    <button type="submit">Add Selection</button>
   </form>
 
-  <table id="estimate-table" border="1">
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>SKU</th>
-        <th>Description</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="estimate-content">
+    <table id="estimate-table" border="1">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Description</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-  <button id="generate-estimate">Generate Estimate</button>
-  <button id="download-pdf">Download PDF</button>
-  <button id="clear-estimate">Clear Estimate</button>
+  <div class="actions">
+    <button id="generate-estimate">Print Estimate</button>
+    <button id="download-pdf">Download PDF</button>
+    <button id="clear-estimate">Clear Estimate</button>
+  </div>
 
-  <script src="script.js"></script>
+  <!-- jsPDF & html2canvas for PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
