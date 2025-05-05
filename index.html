@@ -2,78 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Door &amp; Window Estimate Generator</title>
+  <title>101 Doors &amp; Windows – Estimate Generator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Door &amp; Window Estimate Generator</h1>
+  <div class="container">
+    <div class="card">
 
-  <form id="product-form">
-    <!-- Door Styles -->
-    <div class="form-group dropdown">
-      <label>Door Styles:</label>
-      <button type="button" id="doorDropdownBtn">Select Door Styles ▼</button>
-      <div class="dropdown-content" id="doorDropdownContent">
-        <label><input type="checkbox" value="alki"> Alki</label>
-        <label><input type="checkbox" value="berkely"> Berkely</label>
-        <label><input type="checkbox" value="whitmen"> Whitmen</label>
-        <label><input type="checkbox" value="mercer"> Mercer</label>
-        <label><input type="checkbox" value="kingston"> Kingston</label>
+      <h1>101 Doors &amp; Windows</h1>
+
+      <!-- ──────────  FORM  ────────── -->
+      <form id="product-form">
+        <!-- Door Styles -->
+        <div class="form-group dropdown">
+          <label>Door Styles:</label>
+          <button type="button" id="doorDropdownBtn">Select Door Styles ▼</button>
+          <div class="dropdown-content" id="doorDropdownContent">
+            <label><input type="checkbox" value="alki"> Alki</label>
+            <label><input type="checkbox" value="berkely"> Berkely</label>
+            <label><input type="checkbox" value="whitmen"> Whitmen</label>
+            <label><input type="checkbox" value="mercer"> Mercer</label>
+            <label><input type="checkbox" value="kingston"> Kingston</label>
+          </div>
+        </div>
+
+        <!-- Baseboard & Casing -->
+        <div class="form-group dropdown">
+          <label>Baseboard &amp; Casing:</label>
+          <button type="button" id="baseboardDropdownBtn">Select Baseboards ▼</button>
+          <div class="dropdown-content" id="baseboardDropdownContent">
+            <label><input type="checkbox" value="mdf423"> MDF423</label>
+            <label><input type="checkbox" value="mdf1024"> MDF1024</label>
+          </div>
+        </div>
+
+        <!-- Door Hardware -->
+        <div class="form-group dropdown">
+          <label>Door Hardware:</label>
+          <button type="button" id="hardwareDropdownBtn">Select Hardware ▼</button>
+          <div class="dropdown-content" id="hardwareDropdownContent">
+            <label><input type="checkbox" value="satinHinge"> Satin Hinge</label>
+            <label><input type="checkbox" value="blackHinge"> Black Hinge</label>
+            <label><input type="checkbox" value="crossflowLeverBlack"> Cross‑Flow Lever Black</label>
+          </div>
+        </div>
+
+        <!-- Front Entry Handle Set -->
+        <div class="form-group dropdown">
+          <label>Front Entry Handle Set:</label>
+          <button type="button" id="entryDropdownBtn">Select Entry Handles ▼</button>
+          <div class="dropdown-content" id="entryDropdownContent">
+            <label><input type="checkbox" value="londonEntrySet"> London Entry Set</label>
+            <label><input type="checkbox" value="montereyEntrySet"> Monterey Entry Set</label>
+          </div>
+        </div>
+
+        <button type="submit">Add Selection</button>
+      </form>
+
+      <!-- ──────────  ESTIMATE TABLE  ────────── -->
+      <div id="estimate-content">
+        <table id="estimate-table" class="table-clean">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </div>
 
-    <!-- Baseboard & Casing -->
-    <div class="form-group dropdown">
-      <label>Baseboard &amp; Casing:</label>
-      <button type="button" id="baseboardDropdownBtn">Select Baseboards ▼</button>
-      <div class="dropdown-content" id="baseboardDropdownContent">
-        <label><input type="checkbox" value="mdf423"> MDF423</label>
-        <label><input type="checkbox" value="mdf1024"> MDF1024</label>
+      <!-- ──────────  ACTION BUTTONS  ────────── -->
+      <div class="actions">
+        <button id="generate-estimate">Print Estimate</button>
+        <button id="download-pdf">Download PDF</button>
+        <button id="clear-estimate">Clear Estimate</button>
       </div>
-    </div>
 
-    <!-- Door Hardware -->
-    <div class="form-group dropdown">
-      <label>Door Hardware:</label>
-      <button type="button" id="hardwareDropdownBtn">Select Hardware ▼</button>
-      <div class="dropdown-content" id="hardwareDropdownContent">
-        <label><input type="checkbox" value="satinHinge"> Satin Hinge</label>
-        <label><input type="checkbox" value="blackHinge"> Black Hinge</label>
-        <label><input type="checkbox" value="crossflowLeverBlack"> Cross-Flow Lever Black</label>
-      </div>
-    </div>
-
-    <!-- Front Entry Handle Set -->
-    <div class="form-group dropdown">
-      <label>Front Entry Handle Set:</label>
-      <button type="button" id="entryDropdownBtn">Select Entry Handles ▼</button>
-      <div class="dropdown-content" id="entryDropdownContent">
-        <label><input type="checkbox" value="londonEntrySet"> London Entry Set</label>
-        <label><input type="checkbox" value="montereyEntrySet"> Monterey Entry Set</label>
-      </div>
-    </div>
-
-    <button type="submit">Add Selection</button>
-  </form>
-
-  <div id="estimate-content">
-    <table id="estimate-table" border="1">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Description</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div class="actions">
-    <button id="generate-estimate">Print Estimate</button>
-    <button id="download-pdf">Download PDF</button>
-    <button id="clear-estimate">Clear Estimate</button>
-  </div>
+    </div><!-- /.card -->
+  </div><!-- /.container -->
 
   <!-- jsPDF & html2canvas for PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
