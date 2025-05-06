@@ -29,6 +29,17 @@
     color: var(--accent);
   }
   
+
+  .logo {
+    margin-bottom: 32px;
+  }
+  
+  .logo img {
+    max-width: 320px;  /* adjust as needed */
+    height: auto;
+  }
+
+  
   /* ───────────────
      Layout containers
      ─────────────── */
@@ -37,6 +48,7 @@
     margin: 40px auto;
     padding: 0 20px;
   }
+  
   
   .card {
     background: var(--card-bg);
