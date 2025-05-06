@@ -1,13 +1,13 @@
 /* ───────────────
-   Base typography
+   Base typography & colours
    ─────────────── */
    :root {
-    --bg:         #f5f6f8;   /* light neutral background */
-    --card-bg:    #ffffff;   /* white cards */
-    --border:     #d0d4da;   /* subtle grey border */
-    --accent:     #0c3d6b;   /* deep blue accent for headings/buttons */
-    --text:       #20232a;   /* primary text */
-    --text-light: #555c66;   /* secondary text */
+    --bg:         #f5f6f8;
+    --card-bg:    #ffffff;
+    --border:     #d0d4da;
+    --accent:     #0c3d6b;
+    --text:       #20232a;
+    --text-light: #555c66;
   }
   
   *,
@@ -30,7 +30,7 @@
   }
   
   /* ───────────────
-     Layout helpers
+     Layout containers
      ─────────────── */
   .container {
     max-width: 960px;
@@ -75,18 +75,14 @@
   }
   
   button:hover,
-  .dropdown > button:hover {
-    background: #0a3257;
-  }
+  .dropdown > button:hover { background: #0a3257; }
   
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
   
-  .dropdown {
-    position: relative;
-  }
+  /* ───────────────
+     Dropdowns
+     ─────────────── */
+  .dropdown { position: relative; }
   
   .dropdown-content {
     display: none;
@@ -121,9 +117,7 @@
     margin-top: 24px;
   }
   
-  .table-clean thead {
-    background: #eaecee;
-  }
+  .table-clean thead { background: #eaecee; }
   
   .table-clean th,
   .table-clean td {
@@ -132,14 +126,15 @@
     text-align: center;
   }
   
-  .table-clean th {
-    font-weight: 600;
-    color: var(--text-light);
-  }
+  .table-clean th { font-weight: 600; color: var(--text-light); }
   
+  /* STRICT image cap */
   .table-clean img {
-    width: 160px;
+    max-width: 160px;   /* ❱❱ set your desired maximum here */
+    max-height: 160px;  /*   ensures neither side exceeds 160 px  */
+    width: auto;
     height: auto;
+    object-fit: contain;
     border-radius: 4px;
   }
   
@@ -153,13 +148,8 @@
     flex-wrap: wrap;
   }
   
-  .delete-btn {
-    background: #c62828;
-  }
-  
-  .delete-btn:hover {
-    background: #a61f1f;
-  }
+  .delete-btn       { background: #c62828; }
+  .delete-btn:hover { background: #a61f1f; }
   
   /* ───────────────
      Print overrides
@@ -168,15 +158,13 @@
     body { background: #fff; }
     .container,
     .card { box-shadow: none; border: 0; }
-  
-    /* hide controls */
     form, .actions { display: none; }
   
-    /* hide Action column (3rd) */
+    /* hide “Action” column */
     th:nth-child(3),
     td:nth-child(3) { display: none; }
   
-    /* larger images for print */
-    .table-clean img { max-width: 220px; }
+    /* keep same max size in print */
+    .table-clean img { max-width: 160px; max-height: 160px; }
   }
   
