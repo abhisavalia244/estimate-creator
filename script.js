@@ -12,6 +12,7 @@ const catalog = {
   doorStyles: {
     // Fineline
     alki:                { name: 'Alki (Fineline)',                image: 'images/alki.jpg' },
+    berkley:            { name: 'Berkley (Fineline)',            image: 'images/berkley.jpg' },
     denman:              { name: 'Denman (Fineline)',              image: 'images/denman.jpg' },
     laurelhurst:         { name: 'Laurelhurst (Fineline)',         image: 'images/laurelhurst.jpg' },
     montlake:            { name: 'Montlake (Fineline)',            image: 'images/montlake.jpg' },
