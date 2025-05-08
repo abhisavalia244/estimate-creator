@@ -266,15 +266,62 @@ function addRowToTable(item) {
   const row = document.createElement("tr");
   row.innerHTML = `
     <td><img src="${item.image}" alt="${item.name}"></td>
-    <td>${item.name}</td>
+    <td class="description-cell" title="Click to edit">${item.name}</td>
     <td><button class="delete-btn">Delete</button></td>
   `;
-  tableBody.appendChild(row);
-  row.querySelector(".delete-btn").addEventListener("click", () => {
-    row.remove();
-    items = items.filter(i => i.name !== item.name);
-    localStorage.setItem("estimateItems", JSON.stringify(items));
+  
+  // Make the description editable on click
+  const descriptionCell = row.querySelector(".description-cell");
+  descriptionCell.style.cursor = "pointer";
+  
+  descriptionCell.addEventListener("click", function() {
+    // Create input element if we're not already editing
+    if (!this.querySelector("input")) {
+      const currentText = this.textContent;
+      this.innerHTML = `<input type="text" value="${currentText}" class="edit-description" style="width: 100%">`;
+      const input = this.querySelector("input");
+      input.focus();
+      input.select();
+      
+      // Save on blur or Enter key
+      input.addEventListener("blur", finishEditing);
+      input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          finishEditing.call(this);
+        }
+      });
+      
+      function finishEditing() {
+        const newValue = this.value.trim();
+        if (newValue) {
+          this.parentNode.textContent = newValue;
+          
+          // Update the item in our items array (for localStorage)
+          const index = Array.from(tableBody.children).indexOf(row);
+          if (index !== -1 && items[index]) {
+            // Store original name but display edited name
+            if (!items[index].originalName) {
+              items[index].originalName = items[index].name;
+            }
+            items[index].name = newValue;
+            localStorage.setItem("estimateItems", JSON.stringify(items));
+          }
+        }
+      }
+    }
   });
+  
+  // Add delete functionality
+  row.querySelector(".delete-btn").addEventListener("click", () => {
+    const index = Array.from(tableBody.children).indexOf(row);
+    if (index !== -1) {
+      items.splice(index, 1);
+      localStorage.setItem("estimateItems", JSON.stringify(items));
+    }
+    row.remove();
+  });
+  
+  tableBody.appendChild(row);
 }
 
 /* ====== Print, Clear, Download ====== */

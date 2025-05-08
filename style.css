@@ -329,6 +329,38 @@
     transform: scale(1.05);
   }
   
+  /* Editable Description Cell */
+  .description-cell {
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .description-cell:hover {
+    background-color: #f0f3f8;
+  }
+  
+  .description-cell:hover::after {
+    content: "✏️";
+    position: absolute;
+    right: 10px;
+    opacity: 0.5;
+  }
+  
+  .edit-description {
+    padding: 6px 10px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
+    background: white;
+  }
+  
+  .edit-description:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(12, 61, 107, 0.2);
+  }
+  
   /* ───────────────
      Action buttons
      ─────────────── */
