@@ -62,7 +62,7 @@ const catalog = {
     
     /* Entry Sets – Madera */
     maderaEntrysetBlack:           { name: 'Madera Entry Set – Black',           image: 'images/maderaentrysetblack.jpg' },
-    maderaEntrysetPolishedchrome:  { name: 'Madera Entry Set – Polished Chrome', image: 'images/maderaentrysetpolishedchrome.jpg' },
+    maderaEntrysetPolishedbrass:  { name: 'Madera Entry Set – Polished Brass', image: 'images/maderaentrysetpolishedbrass.jpg' },
     maderaEntrysetSatinnickel:     { name: 'Madera Entry Set – Satin Nickel',    image: 'images/maderaentrysetsatinnickel.jpg' },
     
     /* Entry Sets – Ashford */
@@ -71,7 +71,9 @@ const catalog = {
     
     /* Entry Sets – Davos (Emtek) */
     davosEntrysetSatinnickel:      { name: 'Davos Entry Set – Satin Nickel',     image: 'images/davosentrysetsatinnickel.jpg' },
-    
+    davosEntrysetBlack:            { name: 'Davos Entry Set – Black',            image: 'images/davosentrysetblack.jpg' },
+    davosEntrysetPolishedchrome:   { name: 'Davos Entry Set – Polished Chrome', image: 'images/davosentrysetpolishedchrome.jpg' },
+        
     /* Entry Sets – Tavaris (Weiser) */
     tavarisHandlesetBlack:         { name: 'Tavaris Handleset – Black',          image: 'images/tavarishandlesetblack.jpg' },
     tavarisHandlesetSatinnickel:   { name: 'Tavaris Handleset – Satin Nickel',   image: 'images/tavarishandlesetsatinnickel.jpg' },

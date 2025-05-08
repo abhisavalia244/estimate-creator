@@ -261,14 +261,11 @@
     vertical-align: top;
   }
 
-  .invoice-table tr:nth-child(even) {
-    background-color: var(--grey-row);
-  }
 
   /* Product images in table */
   .invoice-table td img {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 180px;
+    max-height: 180px;
     object-fit: contain;
     display: block;
     margin: 0 auto;
