@@ -73,7 +73,7 @@ const catalog = {
     davosEntrysetSatinnickel:      { name: 'Davos Entry Set – Satin Nickel',     image: 'images/davosentrysetsatinnickel.jpg' },
     davosEntrysetBlack:            { name: 'Davos Entry Set – Black',            image: 'images/davosentrysetblack.jpg' },
     davosEntrysetPolishedchrome:   { name: 'Davos Entry Set – Polished Chrome', image: 'images/davosentrysetpolishedchrome.jpg' },
-        
+
     /* Entry Sets – Tavaris (Weiser) */
     tavarisHandlesetBlack:         { name: 'Tavaris Handleset – Black',          image: 'images/tavarishandlesetblack.jpg' },
     tavarisHandlesetSatinnickel:   { name: 'Tavaris Handleset – Satin Nickel',   image: 'images/tavarishandlesetsatinnickel.jpg' },
@@ -136,19 +136,17 @@ const catalog = {
     taymorCrossFlowRoundBlack:         { name: 'Taymor Cross Flow Round Rose – Black',           image: 'images/taymorcrossflowroundblack.jpg' },
     taymorCrossFlowRoundPolishedchrome:{ name: 'Taymor Cross Flow Round Rose – Polished Chrome', image: 'images/taymorcrossflowroundpolishedchrome.jpg' },
     taymorCrossFlowRoundSatinnickel:   { name: 'Taymor Cross Flow Round Rose – Satin Nickel',    image: 'images/taymorcrossflowroundsatinnickel.jpg' },
-    taymorCrossFlowRoundSatinbrass:    { name: 'Taymor Cross Flow Round Rose – Satin Brass',     image: 'images/taymorcrossflowroundsatinbrass.jpg' },
     
     /* Levers – Taymor Pace Line Round */
     taymorPaceLineRoundBlack:         { name: 'Taymor Pace Line Round Rose – Black',           image: 'images/taymorpacelineroundblack.jpg' },
     taymorPaceLineRoundPolishedchrome:{ name: 'Taymor Pace Line Round Rose – Polished Chrome', image: 'images/taymorpacelineroundpolishedchrome.jpg' },
     taymorPaceLineRoundSatinnickel:   { name: 'Taymor Pace Line Round Rose – Satin Nickel',    image: 'images/taymorpacelineroundsatinnickel.jpg' },
-    taymorPaceLineRoundSatinbrass:    { name: 'Taymor Pace Line Round Rose – Satin Brass',     image: 'images/taymorpacelineroundsatinbrass.jpg' },
     
     /* Levers – Taymor Pace Line Square */
     taymorPaceLineSquareBlack:         { name: 'Taymor Pace Line Square Rose – Black',           image: 'images/taymorpacelinesquareblack.jpg' },
     taymorPaceLineSquarePolishedchrome:{ name: 'Taymor Pace Line Square Rose – Polished Chrome', image: 'images/taymorpacelinesquarepolishedchrome.jpg' },
     taymorPaceLineSquareSatinnickel:   { name: 'Taymor Pace Line Square Rose – Satin Nickel',    image: 'images/taymorpacelinesquaresatinnickel.jpg' },
-    taymorPaceLineSquareSatinbrass:    { name: 'Taymor Pace Line Square Rose – Satin Brass',     image: 'images/taymorpacelinesquaresatinbrass.jpg' },
+    
     
     /* Levers – Weiser Halifax Square */
     weiserHalifaxSquareBlack:         { name: 'Weiser Halifax Square Lever – Black',           image: 'images/weiserhalifaxsquareblack.jpg' },
@@ -157,6 +155,12 @@ const catalog = {
     weiserHalifaxSquareSatinbrass:    { name: 'Weiser Halifax Square Lever – Satin Brass',     image: 'images/weiserhalifaxsquaresatinbrass.jpg' },
     weiserHalifaxSquareSatinchrome:   { name: 'Weiser Halifax Square Lever – Satin Chrome',    image: 'images/weiserhalifaxsquaresatinchrome.jpg' },
     
+    /* Levers – Weiser Halifax Round */
+    weiserHalifaxRoundBlack:         { name: 'Weiser Halifax Round Lever – Black',           image: 'images/weiserhalifaxroundblack.jpg' },
+    weiserHalifaxRoundPolishedchrome:{ name: 'Weiser Halifax Round Lever – Polished Chrome', image: 'images/weiserhalifaxroundpolishedchrome.jpg' },
+    weiserHalifaxRoundSatinnickel:   { name: 'Weiser Halifax Round Lever – Satin Nickel',    image: 'images/weiserhalifaxroundsatinnickel.jpg' }, 
+    
+
     /* Levers – Weiser Milan Round */
     weiserMilanRoundBlack:         { name: 'Weiser Milan Round Lever – Black',           image: 'images/weisermilanroundblack.jpg' },
     weiserMilanRoundPolishedchrome:{ name: 'Weiser Milan Round Lever – Polished Chrome', image: 'images/weisermilanroundpolishedchrome.jpg' },
@@ -168,21 +172,19 @@ const catalog = {
     emtekHeliosPolishedchrome:{ name: 'Emtek Helios Lever – Polished Chrome', image: 'images/emtekheliospolishedchrome.jpg' },
     emtekHeliosSatinnickel:   { name: 'Emtek Helios Lever – Satin Nickel',    image: 'images/emtekheliossatinnickel.jpg' },
     emtekHeliosSatinbrass:    { name: 'Emtek Helios Lever – Satin Brass',     image: 'images/emtekheliossatinbrass.jpg' },
-    emtekHeliosSatinchrome:   { name: 'Emtek Helios Lever – Satin Chrome',    image: 'images/emtekheliossatinchrome.jpg' },
+
     
     /* Levers – Emtek Stuttgart */
     emtekStuttgartBlack:         { name: 'Emtek Stuttgart Lever – Black',           image: 'images/emtekstuttgartblack.jpg' },
     emtekStuttgartPolishedchrome:{ name: 'Emtek Stuttgart Lever – Polished Chrome', image: 'images/emtekstuttgartpolishedchrome.jpg' },
     emtekStuttgartSatinnickel:   { name: 'Emtek Stuttgart Lever – Satin Nickel',    image: 'images/emtekstuttgartsatinnickel.jpg' },
     emtekStuttgartSatinbrass:    { name: 'Emtek Stuttgart Lever – Satin Brass',     image: 'images/emtekstuttgartsatinbrass.jpg' },
-    emtekStuttgartSatinchrome:   { name: 'Emtek Stuttgart Lever – Satin Chrome',    image: 'images/emtekstuttgartsatinchrome.jpg' },
+
     
     /* Knobs – Barcelona */
     knobBarcelonaBlack:         { name: 'Barcelona Cabinet Knob – Black',           image: 'images/knobbarcelonablack.jpg' },
-    knobBarcelonaPolishedchrome:{ name: 'Barcelona Cabinet Knob – Polished Chrome', image: 'images/knobbarcelonapolishedchrome.jpg' },
     knobBarcelonaSatinnickel:   { name: 'Barcelona Cabinet Knob – Satin Nickel',    image: 'images/knobbarcelonasatinnickel.jpg' },
-    knobBarcelonaSatinchrome:   { name: 'Barcelona Cabinet Knob – Satin Chrome',    image: 'images/knobbarcelonasatinchrome.jpg' },
-    
+    knobBarcelonaSatinbrass:   { name: 'Barcelona Cabinet Knob – Satin Brass',    image: 'images/knobbarcelonasatinbrass.jpg' },
     /* Knobs – Troy */
     knobTroyBlack:         { name: 'Troy Knob – Black',           image: 'images/knobtroypblack.jpg' },
     knobTroySatinnickel:   { name: 'Troy Knob – Satin Nickel',    image: 'images/knobtroysatinnickel.jpg' },
