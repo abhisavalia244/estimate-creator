@@ -199,13 +199,6 @@ const catalog = {
     hingeEmtekSatinnickel:    { name: 'Emtek Hinge – Satin Nickel',   image: 'images/hingeemteksatinnickel.jpg' },
     hingeEmtekSatinbrass:     { name: 'Emtek Hinge – Satin Brass',    image: 'images/hingeemteksatinbrass.jpg' },
     hingeEmtekSatinchrome:    { name: 'Emtek Hinge – Satin Chrome',   image: 'images/hingeemteksatinchrome.jpg' }
-  },
-  
-
-  /* ----- Entry Handles ----- */
-  entryHandle: {
-    londonEntrySet:      { name: 'London Entry Set',               image: 'images/london_entryset.jpg' },
-    montereyEntrySet:    { name: 'Monterey Entry Set',             image: 'images/monterey_entryset.jpg' },
   }
 };
 
@@ -223,15 +216,12 @@ const baseBtn   = document.getElementById("baseboardDropdownBtn");
 const baseCont  = document.getElementById("baseboardDropdownContent");
 const hwBtn     = document.getElementById("hardwareDropdownBtn");
 const hwCont    = document.getElementById("hardwareDropdownContent");
-const entryBtn  = document.getElementById("entryDropdownBtn");
-const entryCont = document.getElementById("entryDropdownContent");
 
 /* ====== Dropdown toggles ====== */
 [
   [doorBtn,  doorCont],
   [baseBtn,  baseCont],
-  [hwBtn,    hwCont],
-  [entryBtn, entryCont]
+  [hwBtn,    hwCont]
 ].forEach(([btn, cont]) => {
   btn.addEventListener("click", () => cont.classList.toggle("show"));
 });
@@ -261,8 +251,7 @@ form.addEventListener("submit", e => {
   const picks = [
     ...getChecked(doorCont).map(k => catalog.doorStyles[k]),
     ...getChecked(baseCont).map(k => catalog.baseboard[k]),
-    ...getChecked(hwCont).map(k   => catalog.doorHardware[k]),
-    ...getChecked(entryCont).map(k => catalog.entryHandle[k])
+    ...getChecked(hwCont).map(k => catalog.doorHardware[k])
   ];
 
   if (picks.length === 0) return alert("Please select at least one item.");
