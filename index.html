@@ -74,28 +74,213 @@
           </div>
         </div>
 
-        <!-- Door Hardware (nested colours) -->
+        <!-- Door Hardware (type → model → colour) -->
         <div class="form-group dropdown">
           <label>Door Hardware:</label>
           <button type="button" id="hardwareDropdownBtn">Select Hardware ▼</button>
+
           <div class="dropdown-content" id="hardwareDropdownContent">
-            <details>
-              <summary>Hinges ▸</summary>
-              <label><input type="checkbox" value="hingeBlack"> Black</label>
-              <label><input type="checkbox" value="hingeSatinNickel"> Satin&nbsp;Nickel</label>
-              <label><input type="checkbox" value="hingeBrushedChrome"> Brushed&nbsp;Chrome</label>
-              <label><input type="checkbox" value="hingeSatinBrass"> Satin&nbsp;Brass</label>
+
+            <!-- 1) Entry Set -->
+            <details><summary>Entry Sets ▸</summary>
+
+              <details><summary>London Entryset ▸</summary>
+                <label><input type="checkbox" value="londonEntrysetBlack"> Black</label>
+                <label><input type="checkbox" value="londonEntrysetPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="londonEntrysetSatinnickel"> Satin Nickel</label>
+              </details>
+
+              <details><summary>Strait Handleset ▸</summary>
+                <label><input type="checkbox" value="straitHandlesetBlack"> Black</label>
+                <label><input type="checkbox" value="straitHandlesetPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="straitHandlesetSatinnickel"> Satin Nickel</label>
+              </details>
+
+              <details><summary>Madera Entry Set ▸</summary>
+                <label><input type="checkbox" value="maderaEntrysetBlack"> Black</label>
+                <label><input type="checkbox" value="maderaEntrysetPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="maderaEntrysetSatinnickel"> Satin Nickel</label>
+              </details>
+
+              <details><summary>Ashford Handleset ▸</summary>
+                <label><input type="checkbox" value="ashfordHandlesetBlack"> Black</label>
+                <label><input type="checkbox" value="ashfordHandlesetSatinnickel"> Satin Nickel</label>
+              </details>
+
+              <details><summary>Davos Tubular Entry Set (Emtek) ▸</summary>
+                <label><input type="checkbox" value="davosEntrysetSatinnickel"> Satin Nickel</label>
+              </details>
+
+              <details><summary>Tavaris Handleset (Weiser) ▸</summary>
+                <label><input type="checkbox" value="tavarisHandlesetBlack"> Black</label>
+                <label><input type="checkbox" value="tavarisHandlesetSatinnickel"> Satin Nickel</label>
+              </details>
             </details>
 
-            <details>
-              <summary>Levers ▸</summary>
-              <label><input type="checkbox" value="leverBlack"> Black</label>
-              <label><input type="checkbox" value="leverSatinNickel"> Satin&nbsp;Nickel</label>
-              <label><input type="checkbox" value="leverBrushedChrome"> Brushed&nbsp;Chrome</label>
-              <label><input type="checkbox" value="leverSatinBrass"> Satin&nbsp;Brass</label>
+            <!-- 2) Deadbolt -->
+            <details><summary>Deadbolts ▸</summary>
+
+              <!-- Taymor -->
+              <details><summary>Taymor ▸</summary>
+                <details><summary>Round Deadbolt ▸</summary>
+                  <label><input type="checkbox" value="taymorRoundDeadboltBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorRoundDeadboltPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorRoundDeadboltSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorRoundDeadboltSatinchrome"> Satin Chrome</label>
+                </details>
+                <details><summary>Square Deadbolt ▸</summary>
+                  <label><input type="checkbox" value="taymorSquareDeadboltBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorSquareDeadboltPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorSquareDeadboltSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorSquareDeadboltSatinchrome"> Satin Chrome</label>
+                </details>
+              </details>
+
+              <!-- Weiser -->
+              <details><summary>Weiser ▸</summary>
+                <details><summary>Round Deadbolt ▸</summary>
+                  <label><input type="checkbox" value="weiserRoundDeadboltBlack"> Black</label>
+                  <label><input type="checkbox" value="weiserRoundDeadboltPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="weiserRoundDeadboltSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="weiserRoundDeadboltSatinchrome"> Satin Chrome</label>
+                </details>
+                <details><summary>Square Deadbolt ▸</summary>
+                  <label><input type="checkbox" value="weiserSquareDeadboltBlack"> Black</label>
+                  <label><input type="checkbox" value="weiserSquareDeadboltPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="weiserSquareDeadboltSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="weiserSquareDeadboltSatinchrome"> Satin Chrome</label>
+                </details>
+              </details>
             </details>
-          </div>
-        </div>
+
+            <!-- 3) Levers -->
+            <details><summary>Levers ▸</summary>
+
+              <!-- Taymor Levers -->
+              <details><summary>Taymor ▸</summary>
+                <details><summary>Arc Deco Round Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorArcDecoRoundBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorArcDecoRoundPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorArcDecoRoundSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorArcDecoRoundSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Arc Deco Square Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorArcDecoSquareBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorArcDecoSquarePolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorArcDecoSquareSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorArcDecoSquareSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Britannia ▸</summary>
+                  <label><input type="checkbox" value="taymorBritanniaBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorBritanniaPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorBritanniaSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorBritanniaSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Vega Round Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorVegaRoundBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorVegaRoundPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorVegaRoundSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorVegaRoundSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Vega Square Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorVegaSquareBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorVegaSquarePolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorVegaSquareSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorVegaSquareSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Cross Flow Round Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorCrossFlowRoundBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorCrossFlowRoundPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorCrossFlowRoundSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorCrossFlowRoundSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Pace Line Round Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorPaceLineRoundBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorPaceLineRoundPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorPaceLineRoundSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorPaceLineRoundSatinbrass"> Satin Brass</label>
+                </details>
+                <details><summary>Pace Line Square Rose ▸</summary>
+                  <label><input type="checkbox" value="taymorPaceLineSquareBlack"> Black</label>
+                  <label><input type="checkbox" value="taymorPaceLineSquarePolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="taymorPaceLineSquareSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="taymorPaceLineSquareSatinbrass"> Satin Brass</label>
+                </details>
+              </details>
+
+              <!-- Weiser Levers -->
+              <details><summary>Weiser ▸</summary>
+                <details><summary>Halifax Lever (Square) ▸</summary>
+                  <label><input type="checkbox" value="weiserHalifaxSquareBlack"> Black</label>
+                  <label><input type="checkbox" value="weiserHalifaxSquarePolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="weiserHalifaxSquareSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="weiserHalifaxSquareSatinbrass"> Satin Brass</label>
+                  <label><input type="checkbox" value="weiserHalifaxSquareSatinchrome"> Satin Chrome</label>
+                </details>
+                <details><summary>Milan Lever (Round) ▸</summary>
+                  <label><input type="checkbox" value="weiserMilanRoundBlack"> Black</label>
+                  <label><input type="checkbox" value="weiserMilanRoundPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="weiserMilanRoundSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="weiserMilanRoundSatinchrome"> Satin Chrome</label>
+                </details>
+              </details>
+
+              <!-- Emtek Levers -->
+              <details><summary>Emtek ▸</summary>
+                <details><summary>Helios Lever ▸</summary>
+                  <label><input type="checkbox" value="emtekHeliosBlack"> Black</label>
+                  <label><input type="checkbox" value="emtekHeliosPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="emtekHeliosSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="emtekHeliosSatinbrass"> Satin Brass</label>
+                  <label><input type="checkbox" value="emtekHeliosSatinchrome"> Satin Chrome</label>
+                </details>
+                <details><summary>Stuttgart Lever ▸</summary>
+                  <label><input type="checkbox" value="emtekStuttgartBlack"> Black</label>
+                  <label><input type="checkbox" value="emtekStuttgartPolishedchrome"> Polished Chrome</label>
+                  <label><input type="checkbox" value="emtekStuttgartSatinnickel"> Satin Nickel</label>
+                  <label><input type="checkbox" value="emtekStuttgartSatinbrass"> Satin Brass</label>
+                  <label><input type="checkbox" value="emtekStuttgartSatinchrome"> Satin Chrome</label>
+                </details>
+              </details>
+            </details>
+
+            <!-- 4) Knobs -->
+            <details><summary>Knobs ▸</summary>
+              <details><summary>Barcelona Cabinet Knob ▸</summary>
+                <label><input type="checkbox" value="knobBarcelonaBlack"> Black</label>
+                <label><input type="checkbox" value="knobBarcelonaPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="knobBarcelonaSatinnickel"> Satin Nickel</label>
+                <label><input type="checkbox" value="knobBarcelonaSatinchrome"> Satin Chrome</label>
+              </details>
+              <details><summary>Troy Knob ▸</summary>
+                <label><input type="checkbox" value="knobTroyBlack"> Black</label>
+                <label><input type="checkbox" value="knobTroySatinnickel"> Satin Nickel</label>
+                <label><input type="checkbox" value="knobTroySatinchrome"> Satin Chrome</label>
+              </details>
+            </details>
+
+            <!-- 5) Hinges -->
+            <details><summary>Hinges ▸</summary>
+
+              <details><summary>Taymor ▸</summary>
+                <label><input type="checkbox" value="hingeTaymorBlack"> Black</label>
+                <label><input type="checkbox" value="hingeTaymorPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="hingeTaymorSatinnickel"> Satin Nickel</label>
+                <label><input type="checkbox" value="hingeTaymorSatinbrass"> Satin Brass</label>
+                <label><input type="checkbox" value="hingeTaymorSatinchrome"> Satin Chrome</label>
+              </details>
+
+              <details><summary>Emtek ▸</summary>
+                <label><input type="checkbox" value="hingeEmtekBlack"> Black</label>
+                <label><input type="checkbox" value="hingeEmtekPolishedchrome"> Polished Chrome</label>
+                <label><input type="checkbox" value="hingeEmtekSatinnickel"> Satin Nickel</label>
+                <label><input type="checkbox" value="hingeEmtekSatinbrass"> Satin Brass</label>
+                <label><input type="checkbox" value="hingeEmtekSatinchrome"> Satin Chrome</label>
+              </details>
+            </details>
+
+          </div><!-- /.dropdown-content -->
+        </div><!-- /.form-group -->
 
         <!-- Entry Handles -->
         <div class="form-group dropdown">

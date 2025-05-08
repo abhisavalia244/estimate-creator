@@ -50,18 +50,157 @@ const catalog = {
 
   /* ----- Door Hardware (hinges & levers colours) ----- */
   doorHardware: {
-    // Hinges
-    hingeBlack:          { name: 'Hinge – Black',                  image: 'images/hinge_black.jpg' },
-    hingeSatinNickel:    { name: 'Hinge – Satin Nickel',           image: 'images/hinge_satinnickel.jpg' },
-    hingeBrushedChrome:  { name: 'Hinge – Brushed Chrome',         image: 'images/hinge_brushedchrome.jpg' },
-    hingeSatinBrass:     { name: 'Hinge – Satin Brass',            image: 'images/hinge_satinbrass.jpg' },
-
-    // Levers
-    leverBlack:          { name: 'Lever – Black',                  image: 'images/lever_black.jpg' },
-    leverSatinNickel:    { name: 'Lever – Satin Nickel',           image: 'images/lever_satinnickel.jpg' },
-    leverBrushedChrome:  { name: 'Lever – Brushed Chrome',         image: 'images/lever_brushedchrome.jpg' },
-    leverSatinBrass:     { name: 'Lever – Satin Brass',            image: 'images/lever_satinbrass.jpg' },
+    /* Entry Sets – London */
+    londonEntrysetBlack:          { name: 'London Entry Set – Black',            image: 'images/londonentrysetblack.jpg' },
+    londonEntrysetPolishedchrome: { name: 'London Entry Set – Polished Chrome',  image: 'images/londonentrysetpolishedchrome.jpg' },
+    londonEntrysetSatinnickel:    { name: 'London Entry Set – Satin Nickel',     image: 'images/londonentrysetsatinnickel.jpg' },
+  
+    /* Entry Sets – Strait */
+    straitHandlesetBlack:          { name: 'Strait Handleset – Black',           image: 'images/straithandlesetblack.jpg' },
+    straitHandlesetPolishedchrome: { name: 'Strait Handleset – Polished Chrome', image: 'images/straithandlesetpolishedchrome.jpg' },
+    straitHandlesetSatinnickel:    { name: 'Strait Handleset – Satin Nickel',    image: 'images/straithandlesetsatinnickel.jpg' },
+    
+    /* Entry Sets – Madera */
+    maderaEntrysetBlack:           { name: 'Madera Entry Set – Black',           image: 'images/maderaentrysetblack.jpg' },
+    maderaEntrysetPolishedchrome:  { name: 'Madera Entry Set – Polished Chrome', image: 'images/maderaentrysetpolishedchrome.jpg' },
+    maderaEntrysetSatinnickel:     { name: 'Madera Entry Set – Satin Nickel',    image: 'images/maderaentrysetsatinnickel.jpg' },
+    
+    /* Entry Sets – Ashford */
+    ashfordHandlesetBlack:         { name: 'Ashford Handleset – Black',          image: 'images/ashfordhandlesetblack.jpg' },
+    ashfordHandlesetSatinnickel:   { name: 'Ashford Handleset – Satin Nickel',   image: 'images/ashfordhandlesetsatinnickel.jpg' },
+    
+    /* Entry Sets – Davos (Emtek) */
+    davosEntrysetSatinnickel:      { name: 'Davos Entry Set – Satin Nickel',     image: 'images/davosentrysetsatinnickel.jpg' },
+    
+    /* Entry Sets – Tavaris (Weiser) */
+    tavarisHandlesetBlack:         { name: 'Tavaris Handleset – Black',          image: 'images/tavarishandlesetblack.jpg' },
+    tavarisHandlesetSatinnickel:   { name: 'Tavaris Handleset – Satin Nickel',   image: 'images/tavarishandlesetsatinnickel.jpg' },
+    
+    /* Deadbolts – Taymor Round */
+    taymorRoundDeadboltBlack:         { name: 'Taymor Round Deadbolt – Black',           image: 'images/taymorrounddeadboltblack.jpg' },
+    taymorRoundDeadboltPolishedchrome:{ name: 'Taymor Round Deadbolt – Polished Chrome', image: 'images/taymorrounddeadboltpolishedchrome.jpg' },
+    taymorRoundDeadboltSatinnickel:   { name: 'Taymor Round Deadbolt – Satin Nickel',    image: 'images/taymorrounddeadboltsatinnickel.jpg' },
+    taymorRoundDeadboltSatinchrome:   { name: 'Taymor Round Deadbolt – Satin Chrome',    image: 'images/taymorrounddeadboltsatinchrome.jpg' },
+    
+    /* Deadbolts – Taymor Square */
+    taymorSquareDeadboltBlack:         { name: 'Taymor Square Deadbolt – Black',           image: 'images/taymorsquaredeadboltblack.jpg' },
+    taymorSquareDeadboltPolishedchrome:{ name: 'Taymor Square Deadbolt – Polished Chrome', image: 'images/taymorsquaredeadboltpolishedchrome.jpg' },
+    taymorSquareDeadboltSatinnickel:   { name: 'Taymor Square Deadbolt – Satin Nickel',    image: 'images/taymorsquaredeadboltsatinnickel.jpg' },
+    taymorSquareDeadboltSatinchrome:   { name: 'Taymor Square Deadbolt – Satin Chrome',    image: 'images/taymorsquaredeadboltsatinchrome.jpg' },
+    
+    /* Deadbolts – Weiser Round */
+    weiserRoundDeadboltBlack:         { name: 'Weiser Round Deadbolt – Black',           image: 'images/weiserrounddeadboltblack.jpg' },
+    weiserRoundDeadboltPolishedchrome:{ name: 'Weiser Round Deadbolt – Polished Chrome', image: 'images/weiserrounddeadboltpolishedchrome.jpg' },
+    weiserRoundDeadboltSatinnickel:   { name: 'Weiser Round Deadbolt – Satin Nickel',    image: 'images/weiserrounddeadboltsatinnickel.jpg' },
+    weiserRoundDeadboltSatinchrome:   { name: 'Weiser Round Deadbolt – Satin Chrome',    image: 'images/weiserrounddeadboltsatinchrome.jpg' },
+    
+    /* Deadbolts – Weiser Square */
+    weiserSquareDeadboltBlack:         { name: 'Weiser Square Deadbolt – Black',           image: 'images/weisersquaredeadboltblack.jpg' },
+    weiserSquareDeadboltPolishedchrome:{ name: 'Weiser Square Deadbolt – Polished Chrome', image: 'images/weisersquaredeadboltpolishedchrome.jpg' },
+    weiserSquareDeadboltSatinnickel:   { name: 'Weiser Square Deadbolt – Satin Nickel',    image: 'images/weisersquaredeadboltsatinnickel.jpg' },
+    weiserSquareDeadboltSatinchrome:   { name: 'Weiser Square Deadbolt – Satin Chrome',    image: 'images/weisersquaredeadboltsatinchrome.jpg' },
+    
+    /* Levers – Taymor Arc Deco Round */
+    taymorArcDecoRoundBlack:         { name: 'Taymor Arc Deco Round Rose – Black',           image: 'images/taymorarcdecoRoundblack.jpg' },
+    taymorArcDecoRoundPolishedchrome:{ name: 'Taymor Arc Deco Round Rose – Polished Chrome', image: 'images/taymorarcdecoRoundpolishedchrome.jpg' },
+    taymorArcDecoRoundSatinnickel:   { name: 'Taymor Arc Deco Round Rose – Satin Nickel',    image: 'images/taymorarcdecoRoundsatinnickel.jpg' },
+    taymorArcDecoRoundSatinbrass:    { name: 'Taymor Arc Deco Round Rose – Satin Brass',     image: 'images/taymorarcdecoRoundsatinbrass.jpg' },
+    
+    /* Levers – Taymor Arc Deco Square */
+    taymorArcDecoSquareBlack:         { name: 'Taymor Arc Deco Square Rose – Black',           image: 'images/taymorarcdecosquareblack.jpg' },
+    taymorArcDecoSquarePolishedchrome:{ name: 'Taymor Arc Deco Square Rose – Polished Chrome', image: 'images/taymorarcdecosquarepolishedchrome.jpg' },
+    taymorArcDecoSquareSatinnickel:   { name: 'Taymor Arc Deco Square Rose – Satin Nickel',    image: 'images/taymorarcdecosquaresatinnickel.jpg' },
+    taymorArcDecoSquareSatinbrass:    { name: 'Taymor Arc Deco Square Rose – Satin Brass',     image: 'images/taymorarcdecosquaresatinbrass.jpg' },
+    
+    /* Levers – Taymor Britannia */
+    taymorBritanniaBlack:         { name: 'Taymor Britannia – Black',           image: 'images/taymorbritanniablack.jpg' },
+    taymorBritanniaPolishedchrome:{ name: 'Taymor Britannia – Polished Chrome', image: 'images/taymorbritanniapolishedchrome.jpg' },
+    taymorBritanniaSatinnickel:   { name: 'Taymor Britannia – Satin Nickel',    image: 'images/taymorbritanniasatinnickel.jpg' },
+    taymorBritanniaSatinbrass:    { name: 'Taymor Britannia – Satin Brass',     image: 'images/taymorbritanniasatinbrass.jpg' },
+    
+    /* Levers – Taymor Vega Round */
+    taymorVegaRoundBlack:         { name: 'Taymor Vega Round Rose – Black',           image: 'images/taymorvegaroundblack.jpg' },
+    taymorVegaRoundPolishedchrome:{ name: 'Taymor Vega Round Rose – Polished Chrome', image: 'images/taymorvegaroundpolishedchrome.jpg' },
+    taymorVegaRoundSatinnickel:   { name: 'Taymor Vega Round Rose – Satin Nickel',    image: 'images/taymorvegaroundsatinnickel.jpg' },
+    taymorVegaRoundSatinbrass:    { name: 'Taymor Vega Round Rose – Satin Brass',     image: 'images/taymorvegaroundsatinbrass.jpg' },
+    
+    /* Levers – Taymor Vega Square */
+    taymorVegaSquareBlack:         { name: 'Taymor Vega Square Rose – Black',           image: 'images/taymorvegasquareblack.jpg' },
+    taymorVegaSquarePolishedchrome:{ name: 'Taymor Vega Square Rose – Polished Chrome', image: 'images/taymorvegasquarepolishedchrome.jpg' },
+    taymorVegaSquareSatinnickel:   { name: 'Taymor Vega Square Rose – Satin Nickel',    image: 'images/taymorvegasquaresatinnickel.jpg' },
+    taymorVegaSquareSatinbrass:    { name: 'Taymor Vega Square Rose – Satin Brass',     image: 'images/taymorvegasquaresatinbrass.jpg' },
+    
+    /* Levers – Taymor Cross Flow Round */
+    taymorCrossFlowRoundBlack:         { name: 'Taymor Cross Flow Round Rose – Black',           image: 'images/taymorcrossflowroundblack.jpg' },
+    taymorCrossFlowRoundPolishedchrome:{ name: 'Taymor Cross Flow Round Rose – Polished Chrome', image: 'images/taymorcrossflowroundpolishedchrome.jpg' },
+    taymorCrossFlowRoundSatinnickel:   { name: 'Taymor Cross Flow Round Rose – Satin Nickel',    image: 'images/taymorcrossflowroundsatinnickel.jpg' },
+    taymorCrossFlowRoundSatinbrass:    { name: 'Taymor Cross Flow Round Rose – Satin Brass',     image: 'images/taymorcrossflowroundsatinbrass.jpg' },
+    
+    /* Levers – Taymor Pace Line Round */
+    taymorPaceLineRoundBlack:         { name: 'Taymor Pace Line Round Rose – Black',           image: 'images/taymorpacelineroundblack.jpg' },
+    taymorPaceLineRoundPolishedchrome:{ name: 'Taymor Pace Line Round Rose – Polished Chrome', image: 'images/taymorpacelineroundpolishedchrome.jpg' },
+    taymorPaceLineRoundSatinnickel:   { name: 'Taymor Pace Line Round Rose – Satin Nickel',    image: 'images/taymorpacelineroundsatinnickel.jpg' },
+    taymorPaceLineRoundSatinbrass:    { name: 'Taymor Pace Line Round Rose – Satin Brass',     image: 'images/taymorpacelineroundsatinbrass.jpg' },
+    
+    /* Levers – Taymor Pace Line Square */
+    taymorPaceLineSquareBlack:         { name: 'Taymor Pace Line Square Rose – Black',           image: 'images/taymorpacelinesquareblack.jpg' },
+    taymorPaceLineSquarePolishedchrome:{ name: 'Taymor Pace Line Square Rose – Polished Chrome', image: 'images/taymorpacelinesquarepolishedchrome.jpg' },
+    taymorPaceLineSquareSatinnickel:   { name: 'Taymor Pace Line Square Rose – Satin Nickel',    image: 'images/taymorpacelinesquaresatinnickel.jpg' },
+    taymorPaceLineSquareSatinbrass:    { name: 'Taymor Pace Line Square Rose – Satin Brass',     image: 'images/taymorpacelinesquaresatinbrass.jpg' },
+    
+    /* Levers – Weiser Halifax Square */
+    weiserHalifaxSquareBlack:         { name: 'Weiser Halifax Square Lever – Black',           image: 'images/weiserhalifaxsquareblack.jpg' },
+    weiserHalifaxSquarePolishedchrome:{ name: 'Weiser Halifax Square Lever – Polished Chrome', image: 'images/weiserhalifaxsquarepolishedchrome.jpg' },
+    weiserHalifaxSquareSatinnickel:   { name: 'Weiser Halifax Square Lever – Satin Nickel',    image: 'images/weiserhalifaxsquaresatinnickel.jpg' },
+    weiserHalifaxSquareSatinbrass:    { name: 'Weiser Halifax Square Lever – Satin Brass',     image: 'images/weiserhalifaxsquaresatinbrass.jpg' },
+    weiserHalifaxSquareSatinchrome:   { name: 'Weiser Halifax Square Lever – Satin Chrome',    image: 'images/weiserhalifaxsquaresatinchrome.jpg' },
+    
+    /* Levers – Weiser Milan Round */
+    weiserMilanRoundBlack:         { name: 'Weiser Milan Round Lever – Black',           image: 'images/weisermilanroundblack.jpg' },
+    weiserMilanRoundPolishedchrome:{ name: 'Weiser Milan Round Lever – Polished Chrome', image: 'images/weisermilanroundpolishedchrome.jpg' },
+    weiserMilanRoundSatinnickel:   { name: 'Weiser Milan Round Lever – Satin Nickel',    image: 'images/weisermilanroundsatinnickel.jpg' },
+    weiserMilanRoundSatinchrome:   { name: 'Weiser Milan Round Lever – Satin Chrome',    image: 'images/weisermilanroundsatinchrome.jpg' },
+    
+    /* Levers – Emtek Helios */
+    emtekHeliosBlack:         { name: 'Emtek Helios Lever – Black',           image: 'images/emtekheliosblack.jpg' },
+    emtekHeliosPolishedchrome:{ name: 'Emtek Helios Lever – Polished Chrome', image: 'images/emtekheliospolishedchrome.jpg' },
+    emtekHeliosSatinnickel:   { name: 'Emtek Helios Lever – Satin Nickel',    image: 'images/emtekheliossatinnickel.jpg' },
+    emtekHeliosSatinbrass:    { name: 'Emtek Helios Lever – Satin Brass',     image: 'images/emtekheliossatinbrass.jpg' },
+    emtekHeliosSatinchrome:   { name: 'Emtek Helios Lever – Satin Chrome',    image: 'images/emtekheliossatinchrome.jpg' },
+    
+    /* Levers – Emtek Stuttgart */
+    emtekStuttgartBlack:         { name: 'Emtek Stuttgart Lever – Black',           image: 'images/emtekstuttgartblack.jpg' },
+    emtekStuttgartPolishedchrome:{ name: 'Emtek Stuttgart Lever – Polished Chrome', image: 'images/emtekstuttgartpolishedchrome.jpg' },
+    emtekStuttgartSatinnickel:   { name: 'Emtek Stuttgart Lever – Satin Nickel',    image: 'images/emtekstuttgartsatinnickel.jpg' },
+    emtekStuttgartSatinbrass:    { name: 'Emtek Stuttgart Lever – Satin Brass',     image: 'images/emtekstuttgartsatinbrass.jpg' },
+    emtekStuttgartSatinchrome:   { name: 'Emtek Stuttgart Lever – Satin Chrome',    image: 'images/emtekstuttgartsatinchrome.jpg' },
+    
+    /* Knobs – Barcelona */
+    knobBarcelonaBlack:         { name: 'Barcelona Cabinet Knob – Black',           image: 'images/knobbarcelonablack.jpg' },
+    knobBarcelonaPolishedchrome:{ name: 'Barcelona Cabinet Knob – Polished Chrome', image: 'images/knobbarcelonapolishedchrome.jpg' },
+    knobBarcelonaSatinnickel:   { name: 'Barcelona Cabinet Knob – Satin Nickel',    image: 'images/knobbarcelonasatinnickel.jpg' },
+    knobBarcelonaSatinchrome:   { name: 'Barcelona Cabinet Knob – Satin Chrome',    image: 'images/knobbarcelonasatinchrome.jpg' },
+    
+    /* Knobs – Troy */
+    knobTroyBlack:         { name: 'Troy Knob – Black',           image: 'images/knobtroypblack.jpg' },
+    knobTroySatinnickel:   { name: 'Troy Knob – Satin Nickel',    image: 'images/knobtroysatinnickel.jpg' },
+    knobTroySatinchrome:   { name: 'Troy Knob – Satin Chrome',    image: 'images/knobtroysatinchrome.jpg' },
+  
+    /* Hinges – Taymor */
+    hingeTaymorBlack:          { name: 'Taymor Hinge – Black',          image: 'images/hingetaymorblack.jpg' },
+    hingeTaymorPolishedchrome: { name: 'Taymor Hinge – Polished Chrome',image: 'images/hingetaymorpolishedchrome.jpg' },
+    hingeTaymorSatinnickel:    { name: 'Taymor Hinge – Satin Nickel',   image: 'images/hingetaymorsatinnickel.jpg' },
+    hingeTaymorSatinbrass:     { name: 'Taymor Hinge – Satin Brass',    image: 'images/hingetaymorsatinbrass.jpg' },
+    hingeTaymorSatinchrome:    { name: 'Taymor Hinge – Satin Chrome',   image: 'images/hingetaymorsatinchrome.jpg' },
+  
+    /* Hinges – Emtek */
+    hingeEmtekBlack:          { name: 'Emtek Hinge – Black',          image: 'images/hingeemtekblack.jpg' },
+    hingeEmtekPolishedchrome: { name: 'Emtek Hinge – Polished Chrome',image: 'images/hingeemtekpolishedchrome.jpg' },
+    hingeEmtekSatinnickel:    { name: 'Emtek Hinge – Satin Nickel',   image: 'images/hingeemteksatinnickel.jpg' },
+    hingeEmtekSatinbrass:     { name: 'Emtek Hinge – Satin Brass',    image: 'images/hingeemteksatinbrass.jpg' },
+    hingeEmtekSatinchrome:    { name: 'Emtek Hinge – Satin Chrome',   image: 'images/hingeemteksatinchrome.jpg' }
   },
+  
 
   /* ----- Entry Handles ----- */
   entryHandle: {
