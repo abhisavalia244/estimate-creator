@@ -208,6 +208,7 @@ const tableBody      = document.querySelector("#estimate-table tbody");
 const generateBtn    = document.getElementById("generate-estimate");
 const downloadBtn    = document.getElementById("download-pdf");
 const clearBtn       = document.getElementById("clear-estimate");
+const submitBtn      = document.getElementById("add-selection-btn");
 
 /* Dropdown triggers & content */
 const doorBtn   = document.getElementById("doorDropdownBtn");
@@ -238,6 +239,9 @@ window.addEventListener("DOMContentLoaded", () => {
   if (saved) {
     items = JSON.parse(saved);
     items.forEach(addRowToTable);
+  } else {
+    // Initialize empty state
+    updateTotals();
   }
   
   // Set the estimate date fields
@@ -307,23 +311,48 @@ function saveEstimateDetails() {
 }
 
 /* ====== Handle form submit ====== */
-form.addEventListener("submit", e => {
+submitBtn.addEventListener("click", e => {
   e.preventDefault();
+  
+  console.log("Add Selection button clicked");
 
-  const getChecked = (container) =>
-    Array.from(container.querySelectorAll("input:checked")).map(cb => cb.value);
+  const getChecked = (container) => {
+    return Array.from(container.querySelectorAll("input:checked")).map(cb => cb.value);
+  }
 
-  const picks = [
-    ...getChecked(doorCont).map(k => catalog.doorStyles[k]),
-    ...getChecked(baseCont).map(k => catalog.baseboard[k]),
-    ...getChecked(hwCont).map(k => catalog.doorHardware[k])
-  ];
+  const doorPicks = getChecked(doorCont).map(k => catalog.doorStyles[k] || null).filter(Boolean);
+  const basePicks = getChecked(baseCont).map(k => catalog.baseboard[k] || null).filter(Boolean);
+  const hwPicks = getChecked(hwCont).map(k => catalog.doorHardware[k] || null).filter(Boolean);
+  
+  console.log("Door picks:", doorPicks.length);
+  console.log("Baseboard picks:", basePicks.length);
+  console.log("Hardware picks:", hwPicks.length);
+  
+  const picks = [...doorPicks, ...basePicks, ...hwPicks];
 
-  if (picks.length === 0) return alert("Please select at least one item.");
+  if (picks.length === 0) {
+    alert("Please select at least one item.");
+    return;
+  }
 
-  picks.forEach(item => { items.push(item); addRowToTable(item); });
+  picks.forEach(item => { 
+    console.log("Adding item:", item.name);
+    items.push(item); 
+    addRowToTable(item); 
+  });
+  
+  // Reset all checkboxes
+  document.querySelectorAll("#product-form input[type='checkbox']").forEach(checkbox => {
+    checkbox.checked = false;
+  });
+  
+  // Close any open dropdowns
+  document.querySelectorAll(".dropdown-content").forEach(dropdown => {
+    dropdown.classList.remove("show");
+  });
+  
+  // Save items to localStorage
   localStorage.setItem("estimateItems", JSON.stringify(items));
-  form.reset();
 });
 
 /* ====== Add a row ====== */
@@ -384,9 +413,32 @@ function addRowToTable(item) {
       localStorage.setItem("estimateItems", JSON.stringify(items));
     }
     row.remove();
+    updateTotals(); // Update totals after removing an item
   });
   
   tableBody.appendChild(row);
+  updateTotals(); // Update totals after adding a new item
+}
+
+/* ====== Update tax and total calculations ====== */
+function updateTotals() {
+  // For demonstration, set some sample prices
+  // In a real app, these would come from actual item prices
+  const subtotalValue = items.length * 75.00; // Simple calculation - $75 per item
+  const gstRate = 0.05; // 5% GST
+  
+  const gstAmount = subtotalValue * gstRate;
+  const grandTotal = subtotalValue + gstAmount;
+  
+  // Format currency
+  const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+  
+  // Update the display
+  document.getElementById('subtotal').textContent = formatCurrency(subtotalValue);
+  document.getElementById('gst-amount').textContent = formatCurrency(gstAmount);
+  document.getElementById('total-tax').textContent = formatCurrency(gstAmount);
+  document.getElementById('sales-tax-total').textContent = formatCurrency(gstAmount);
+  document.getElementById('grand-total').textContent = formatCurrency(grandTotal);
 }
 
 /* ====== Print, Clear, Download ====== */
@@ -411,7 +463,13 @@ downloadBtn.addEventListener("click", async () => {
   hide("#product-form");
   
   try {
-    // Capture the entire card with company info, customer details, etc.
+    // Get customer info for the filename
+    const customerName = document.getElementById('customer-name').textContent.replace(/\s+/g, '_');
+    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const estimateNum = document.getElementById('estimate-number').textContent;
+    const filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
+    
+    // Capture the entire document in one go for better alignment
     const element = document.querySelector(".card");
     const canvas = await html2canvas(element, { 
       scale: 2,
@@ -422,30 +480,34 @@ downloadBtn.addEventListener("click", async () => {
     
     const imgData = canvas.toDataURL("image/png");
     
+    // Initialize jsPDF
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF("p", "mm", "a4");
-    const pdfW = pdf.internal.pageSize.getWidth();
-    const pdfH = pdf.internal.pageSize.getHeight();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    // Calculate dimensions
     const imgProps = pdf.getImageProperties(imgData);
-    const imgH = (imgProps.height * pdfW) / imgProps.width;
+    const imgWidth = pageWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
     
-    let hLeft = imgH, position = 0;
-    pdf.addImage(imgData, "PNG", 0, position, pdfW, imgH);
-    hLeft -= pdfH;
+    // Split across multiple pages if necessary
+    let heightLeft = imgHeight;
+    let position = 0;
     
-    while (hLeft > 0) {
-      position = hLeft - imgH;
+    // First page
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    
+    // Add additional pages if needed
+    while (heightLeft > 0) {
+      position = -pageHeight * (imgHeight - heightLeft) / imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pdfW, imgH);
-      hLeft -= pdfH;
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
     }
     
-    // Create filename with customer name and date
-    const customerName = document.getElementById('customer-name').textContent.replace(/\s+/g, '_');
-    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const estimateNum = document.getElementById('estimate-number').textContent;
-    const filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
-    
+    // Save the PDF
     pdf.save(filename);
     
   } catch (error) {

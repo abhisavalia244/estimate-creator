@@ -57,22 +57,17 @@
   }
 
   .logo-section img {
-    max-width: 200px;
+    max-width: 250px;
     height: auto;
-    margin-bottom: 5px;
+    margin-bottom: -30px;
   }
 
-  .company-tagline {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-  .company-address {
+  .company-contact {
     font-size: 11px;
     line-height: 1.4;
   }
 
-  .company-address a {
+  .company-contact a {
     color: var(--text);
     text-decoration: none;
   }
@@ -272,9 +267,11 @@
 
   /* Product images in table */
   .invoice-table td img {
-    max-width: 80px;
-    max-height: 80px;
+    max-width: 120px;
+    max-height: 120px;
     object-fit: contain;
+    display: block;
+    margin: 0 auto;
   }
 
   /* Column widths - updated for simplified table */
