@@ -239,7 +239,72 @@ window.addEventListener("DOMContentLoaded", () => {
     items = JSON.parse(saved);
     items.forEach(addRowToTable);
   }
+  
+  // Set the estimate date fields
+  setEstimateDates();
+  
+  // Make the estimate details editable
+  setupEditableFields();
 });
+
+/* ====== Set default date for estimate ====== */
+function setEstimateDates() {
+  // Only set a default date if the field is empty
+  if (document.getElementById('estimate-date').textContent.trim() === '') {
+    const now = new Date();
+    const dateFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const currentDate = now.toLocaleDateString('en-US', dateFormatOptions);
+    document.getElementById('estimate-date').textContent = currentDate;
+  }
+  
+  // We don't auto-generate the estimate number anymore as it's editable
+}
+
+/* ====== Setup editable customer fields ====== */
+function setupEditableFields() {
+  // Load any saved customer details from localStorage
+  const savedDetails = localStorage.getItem("estimateDetails");
+  if (savedDetails) {
+    const details = JSON.parse(savedDetails);
+    // Set customer details
+    document.getElementById('customer-name').textContent = details.name || 'Client Name';
+    document.getElementById('project-name').textContent = details.project || 'Interior Door Replacement';
+    document.getElementById('project-address').textContent = details.address || 'Customer Address';
+    
+    // Set estimate details if they exist
+    if (details.estimateNumber) {
+      document.getElementById('estimate-number').textContent = details.estimateNumber;
+    }
+    if (details.estimateDate) {
+      document.getElementById('estimate-date').textContent = details.estimateDate;
+    }
+  }
+  
+  // Setup event listeners for all contenteditable elements
+  const editableFields = document.querySelectorAll('[contenteditable="true"]');
+  editableFields.forEach(field => {
+    field.addEventListener('blur', saveEstimateDetails);
+    field.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.blur();
+      }
+    });
+  });
+}
+
+/* ====== Save all editable details to localStorage ====== */
+function saveEstimateDetails() {
+  const estimateDetails = {
+    name: document.getElementById('customer-name').textContent,
+    project: document.getElementById('project-name').textContent,
+    address: document.getElementById('project-address').textContent,
+    estimateNumber: document.getElementById('estimate-number').textContent,
+    estimateDate: document.getElementById('estimate-date').textContent
+  };
+  
+  localStorage.setItem("estimateDetails", JSON.stringify(estimateDetails));
+}
 
 /* ====== Handle form submit ====== */
 form.addEventListener("submit", e => {
@@ -338,33 +403,60 @@ downloadBtn.addEventListener("click", async () => {
   const hide = (sel) => document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
   const show = (sel) => document.querySelectorAll(sel).forEach(el => el.style.display = '');
 
+  // Hide elements not needed in PDF
   hide(".delete-btn");
   hide("#estimate-table th:nth-child(3)");
   hide("#estimate-table td:nth-child(3)");
-
-  const element = document.getElementById("estimate-content");
-  const canvas  = await html2canvas(element, { scale: 2 });
-  const imgData = canvas.toDataURL("image/png");
-
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pdfW = pdf.internal.pageSize.getWidth();
-  const pdfH = pdf.internal.pageSize.getHeight();
-  const imgProps = pdf.getImageProperties(imgData);
-  const imgH = (imgProps.height * pdfW) / imgProps.width;
-
-  let hLeft = imgH, position = 0;
-  pdf.addImage(imgData, "PNG", 0, position, pdfW, imgH);
-  hLeft -= pdfH;
-  while (hLeft > 0) {
-    position = hLeft - imgH;
-    pdf.addPage();
+  hide(".actions");
+  hide("#product-form");
+  
+  try {
+    // Capture the entire card with company info, customer details, etc.
+    const element = document.querySelector(".card");
+    const canvas = await html2canvas(element, { 
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    });
+    
+    const imgData = canvas.toDataURL("image/png");
+    
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgH = (imgProps.height * pdfW) / imgProps.width;
+    
+    let hLeft = imgH, position = 0;
     pdf.addImage(imgData, "PNG", 0, position, pdfW, imgH);
     hLeft -= pdfH;
+    
+    while (hLeft > 0) {
+      position = hLeft - imgH;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pdfW, imgH);
+      hLeft -= pdfH;
+    }
+    
+    // Create filename with customer name and date
+    const customerName = document.getElementById('customer-name').textContent.replace(/\s+/g, '_');
+    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const estimateNum = document.getElementById('estimate-number').textContent;
+    const filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
+    
+    pdf.save(filename);
+    
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    alert("There was an error generating the PDF. Please try again.");
+  } finally {
+    // Restore hidden elements
+    show(".delete-btn");
+    show("#estimate-table th:nth-child(3)");
+    show("#estimate-table td:nth-child(3)");
+    show(".actions");
+    show("#product-form");
   }
-  pdf.save("estimate.pdf");
-
-  show(".delete-btn");
-  show("#estimate-table th:nth-child(3)");
-  show("#estimate-table td:nth-child(3)");
 });
