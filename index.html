@@ -9,35 +9,83 @@
   <div class="container">
     <div class="card">
 
-      <!-- Company logo -->
-      <div class="logo">
-        <img src="images/logo.jpg" alt="101 Doors and Windows">
-        <div class="company-details">
-          <div class="company-name">101 Doors & Windows</div>
-          <p>
-            Bay #1 - 1415 Ontario Ave<br>
-            Saskatoon SK - S7k 1S4<br>
-            (306) 952-4211<br>
-            <a href="mailto:info@101doorsandwindows.com">info@101doorsandwindows.com</a>
-          </p>
+      <!-- Header section with logo and order type -->
+      <div class="invoice-header">
+        <div class="logo-section">
+          <img src="images/logo.jpg" alt="101 Doors and Windows">
+          <div class="company-tagline">Doors - Windows - Mouldings - Hardware</div>
+          <div class="company-address">
+            Bay #1 - 1415 Ontario Ave, Saskatoon SK - S7K 1S4<br>
+            306-952-4211 | <a href="mailto:sales@101doorsandwindows.com">sales@101doorsandwindows.com</a>
+          </div>
+        </div>
+        <div class="order-type">
+          <h1>Estimate</h1>
         </div>
       </div>
 
-      <!-- Estimate Details -->
-      <div class="estimate-details">
-        <div class="estimate-info">
-          <p><strong>Estimate #:</strong> <span id="estimate-number" contenteditable="true">EST-2023-1001</span></p>
-          <p><strong>Date:</strong> <span id="estimate-date" contenteditable="true">June 15, 2023</span></p>
+      <!-- Order details section -->
+      <div class="order-details">
+        <div class="order-info-row">
+          <div class="order-info-box">
+            <div class="box-header">Terms</div>
+            <div class="box-content" contenteditable="true">10th Month Following</div>
+          </div>
+          <div class="order-info-box">
+            <div class="box-header">Date</div>
+            <div class="box-content" id="estimate-date" contenteditable="true"></div>
+          </div>
+          <div class="order-info-box">
+            <div class="box-header">Estimate No.</div>
+            <div class="box-content" id="estimate-number" contenteditable="true">EST-2023-1001</div>
+          </div>
         </div>
+      </div>
+
+      <!-- Customer and Ship To section -->
+      <div class="customer-section">
         <div class="customer-info">
-          <p><strong>Customer:</strong> <span id="customer-name" contenteditable="true">Client Name</span></p>
-          <p><strong>Project:</strong> <span id="project-name" contenteditable="true">Interior Door Replacement</span></p>
-          <p><strong>Address:</strong> <span id="project-address" contenteditable="true">Customer Address</span></p>
+          <div class="box-header">Name / Address</div>
+          <div class="box-content">
+            <div id="customer-name" contenteditable="true">Client Name</div>
+            <div id="customer-address1" contenteditable="true">Street Address</div>
+            <div id="customer-address2" contenteditable="true">City, Province Postal</div>
+            <div id="customer-phone" contenteditable="true">Phone: xxx-xxx-xxxx</div>
+          </div>
+        </div>
+        <div class="shipping-info">
+          <div class="box-header">Ship To</div>
+          <div class="box-content" id="ship-to" contenteditable="true">Same as billing address</div>
+        </div>
+      </div>
+
+      <!-- PO and Project section -->
+      <div class="po-project-section">
+        <div class="po-section">
+          <div class="po-row">
+            <div class="po-box">
+              <div class="box-header">P.O. No.</div>
+              <div class="box-content" id="po-number" contenteditable="true"></div>
+            </div>
+            <div class="po-box">
+              <div class="box-header">Ship Date</div>
+              <div class="box-content" id="ship-date" contenteditable="true"></div>
+            </div>
+            <div class="po-box">
+              <div class="box-header">Rep</div>
+              <div class="box-content" id="rep" contenteditable="true"></div>
+            </div>
+          </div>
+        </div>
+        <div class="project-section">
+          <div class="box-header">Project</div>
+          <div class="box-content" id="project-name" contenteditable="true">Interior Door Replacement</div>
         </div>
       </div>
 
       <!-- ──────────  FORM  ────────── -->
-      <form id="product-form">
+      <div id="product-form">
+        <h3>Add Products to Estimate</h3>
 
         <!-- Door Styles (multi‑level) -->
         <div class="form-group dropdown">
@@ -305,39 +353,57 @@
         </div><!-- /.form-group -->
 
         <button type="submit">Add Selection</button>
-      </form>
+      </div>
 
-      <!-- ──────────  ESTIMATE TABLE  ────────── -->
+      <!-- ────────── INVOICE TABLE ────────── -->
       <div id="estimate-content">
-        <table id="estimate-table" class="table-clean">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="invoice-table-container">
+          <table id="estimate-table" class="invoice-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- Terms and Conditions -->
-      <div class="terms-conditions">
-        <h3>Terms & Conditions</h3>
-        <p>1. This estimate is valid for 30 days from the date of issue.</p>
-        <p>2. A 50% deposit is required to begin work, with the balance due upon completion.</p>
-        <p>3. Product specifications and colors shown are approximate and may vary slightly from actual products.</p>
-        <p>4. Delivery times are approximate and may vary based on product availability.</p>
-        <p>5. Installation services are not included in this estimate unless specifically noted.</p>
+      <!-- Sales Tax Summary -->
+      <div class="summary-section">
+        <div class="tax-summary">
+          <div class="box-header">Sales Tax Summary</div>
+          <div class="tax-content">
+            <div class="tax-row">
+              <div class="tax-label">GST @ 5.0%</div>
+              <div class="tax-amount" id="gst-amount">$0.00</div>
+            </div>
+            <div class="tax-row">
+              <div class="tax-label">Total Tax</div>
+              <div class="tax-amount" id="total-tax">$0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="total-row">
+            <div class="total-label">Subtotal</div>
+            <div class="total-amount" id="subtotal">$0.00</div>
+          </div>
+          <div class="total-row">
+            <div class="total-label">Sales Tax Total</div>
+            <div class="total-amount" id="sales-tax-total">$0.00</div>
+          </div>
+          <div class="total-row grand-total">
+            <div class="total-label">Total</div>
+            <div class="total-amount" id="grand-total">$0.00</div>
+          </div>
+        </div>
       </div>
+      
 
-      <!-- Footer with contact info -->
-      <div class="estimate-footer">
-        <p>Thank you for your business. For any questions regarding this estimate, please contact us at (306) 952-4211.</p>
-        <p>101 Doors & Windows | Bay #1 - 1415 Ontario Ave, Saskatoon SK - S7k 1S4 | www.101doorsandwindows.com</p>
-      </div>
-
-      <!-- ──────────  ACTION BUTTONS  ────────── -->
+      <!-- ────────── ACTION BUTTONS ────────── -->
       <div class="actions">
         <button id="generate-estimate">Print Estimate</button>
         <button id="download-pdf">Download PDF</button>
