@@ -243,9 +243,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (saved) {
     items = JSON.parse(saved);
     items.forEach(addRowToTable);
-  } else {
-    // Initialize empty state
-    updateTotals();
   }
   
   // Set the estimate date fields
@@ -417,32 +414,9 @@ function addRowToTable(item) {
       localStorage.setItem("estimateItems", JSON.stringify(items));
     }
     row.remove();
-    updateTotals(); // Update totals after removing an item
   });
   
   tableBody.appendChild(row);
-  updateTotals(); // Update totals after adding a new item
-}
-
-/* ====== Update tax and total calculations ====== */
-function updateTotals() {
-  // For demonstration, set some sample prices
-  // In a real app, these would come from actual item prices
-  const subtotalValue = items.length * 75.00; // Simple calculation - $75 per item
-  const gstRate = 0.05; // 5% GST
-  
-  const gstAmount = subtotalValue * gstRate;
-  const grandTotal = subtotalValue + gstAmount;
-  
-  // Format currency
-  const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
-  
-  // Update the display
-  document.getElementById('subtotal').textContent = formatCurrency(subtotalValue);
-  document.getElementById('gst-amount').textContent = formatCurrency(gstAmount);
-  document.getElementById('total-tax').textContent = formatCurrency(gstAmount);
-  document.getElementById('sales-tax-total').textContent = formatCurrency(gstAmount);
-  document.getElementById('grand-total').textContent = formatCurrency(grandTotal);
 }
 
 /* ====== Print, Clear, Download ====== */
@@ -473,42 +447,102 @@ downloadBtn.addEventListener("click", async () => {
     const estimateNum = document.getElementById('estimate-number').textContent;
     const filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
     
-    // Capture the entire document in one go for better alignment
-    const element = document.querySelector(".card");
-    const canvas = await html2canvas(element, { 
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false
-    });
-    
-    const imgData = canvas.toDataURL("image/png");
-    
     // Initialize jsPDF
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     
-    // Calculate dimensions
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgWidth = pageWidth;
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+    // Get all table rows to process them individually
+    const rows = document.querySelectorAll("#estimate-table tbody tr");
     
-    // Split across multiple pages if necessary
-    let heightLeft = imgHeight;
-    let position = 0;
+    // Add header content first
+    const header = document.querySelector(".invoice-header");
+    const orderDetails = document.querySelector(".order-details");
+    const customerSection = document.querySelector(".customer-section");
+    const poProjectSection = document.querySelector(".po-project-section");
     
-    // First page
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    // Capture header elements
+    const headerCanvas = await html2canvas(header, { scale: 2, useCORS: true });
+    const headerImgData = headerCanvas.toDataURL("image/png");
+    const headerImgProps = pdf.getImageProperties(headerImgData);
+    const headerImgWidth = pageWidth;
+    const headerImgHeight = (headerImgProps.height * headerImgWidth) / headerImgProps.width;
     
-    // Add additional pages if needed
-    while (heightLeft > 0) {
-      position = -pageHeight * (imgHeight - heightLeft) / imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    // Add header to first page
+    pdf.addImage(headerImgData, 'PNG', 0, 0, headerImgWidth, headerImgHeight);
+    let currentY = headerImgHeight + 5;
+    
+    // Add order details
+    const orderCanvas = await html2canvas(orderDetails, { scale: 2, useCORS: true });
+    const orderImgData = orderCanvas.toDataURL("image/png");
+    const orderImgProps = pdf.getImageProperties(orderImgData);
+    const orderImgWidth = pageWidth;
+    const orderImgHeight = (orderImgProps.height * orderImgWidth) / orderImgProps.width;
+    
+    pdf.addImage(orderImgData, 'PNG', 0, currentY, orderImgWidth, orderImgHeight);
+    currentY += orderImgHeight + 5;
+    
+    // Add customer section
+    const customerCanvas = await html2canvas(customerSection, { scale: 2, useCORS: true });
+    const customerImgData = customerCanvas.toDataURL("image/png");
+    const customerImgProps = pdf.getImageProperties(customerImgData);
+    const customerImgWidth = pageWidth;
+    const customerImgHeight = (customerImgProps.height * customerImgWidth) / customerImgProps.width;
+    
+    pdf.addImage(customerImgData, 'PNG', 0, currentY, customerImgWidth, customerImgHeight);
+    currentY += customerImgHeight + 5;
+    
+    // Add PO project section
+    const poCanvas = await html2canvas(poProjectSection, { scale: 2, useCORS: true });
+    const poImgData = poCanvas.toDataURL("image/png");
+    const poImgProps = pdf.getImageProperties(poImgData);
+    const poImgWidth = pageWidth;
+    const poImgHeight = (poImgProps.height * poImgWidth) / poImgProps.width;
+    
+    pdf.addImage(poImgData, 'PNG', 0, currentY, poImgWidth, poImgHeight);
+    currentY += poImgHeight + 10;
+    
+    // Add table header
+    const tableHeader = document.querySelector("#estimate-table thead");
+    const thCanvas = await html2canvas(tableHeader, { scale: 2, useCORS: true });
+    const thImgData = thCanvas.toDataURL("image/png");
+    const thImgProps = pdf.getImageProperties(thImgData);
+    const thImgWidth = pageWidth;
+    const thImgHeight = (thImgProps.height * thImgWidth) / thImgProps.width;
+    
+    pdf.addImage(thImgData, 'PNG', 0, currentY, thImgWidth, thImgHeight);
+    currentY += thImgHeight + 2;
+    
+    // Process each row individually
+    for (let i = 0; i < rows.length; i++) {
+      // Check if we need a new page
+      if (currentY > pageHeight - 30) {
+        pdf.addPage();
+        // Reset Y position and add the table header again
+        currentY = 10;
+        pdf.addImage(thImgData, 'PNG', 0, currentY, thImgWidth, thImgHeight);
+        currentY += thImgHeight + 2;
+      }
+      
+      // Capture the row
+      const rowCanvas = await html2canvas(rows[i], { scale: 2, useCORS: true });
+      const rowImgData = rowCanvas.toDataURL("image/png");
+      const rowImgProps = pdf.getImageProperties(rowImgData);
+      const rowImgWidth = pageWidth;
+      const rowImgHeight = (rowImgProps.height * rowImgWidth) / rowImgProps.width;
+      
+      // If this row would exceed page height, add a new page
+      if (currentY + rowImgHeight > pageHeight - 10) {
+        pdf.addPage();
+        currentY = 10;
+        pdf.addImage(thImgData, 'PNG', 0, currentY, thImgWidth, thImgHeight);
+        currentY += thImgHeight + 2;
+      }
+      
+      // Add the row to PDF
+      pdf.addImage(rowImgData, 'PNG', 0, currentY, rowImgWidth, rowImgHeight);
+      currentY += rowImgHeight;
     }
     
     // Save the PDF
