@@ -10,6 +10,17 @@ const users = {
   "Abhi": "Abhi@123"
 };
 
+// User initials mapping
+const userInitials = {
+  "admin": "ADMIN",
+  "James": "JM",
+  "Pat": "PL",
+  "Arun": "AL",
+  "Dallas": "DG",
+  "Shauna": "SC",
+  "Abhi": "AS"
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // DOM elements
   const loginForm = document.getElementById('login-form');
@@ -112,6 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', username);
+          
+          // Store user's initials
+          if (userInitials[username]) {
+            localStorage.setItem('userInitials', userInitials[username]);
+          }
           
           // Set expiry (24 hours from now)
           const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);

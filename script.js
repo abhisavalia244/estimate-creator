@@ -395,6 +395,10 @@ window.addEventListener("DOMContentLoaded", () => {
     
     // Setup default PDF filename
     setupDefaultPdfFilename();
+    
+    // Set the user's initials in the Rep field
+    setUserInitialsInRepField();
+    
   } catch (error) {
     console.error("Error initializing application:", error);
     showErrorModal("Application Error", 
@@ -1135,3 +1139,60 @@ downloadBtn.addEventListener("click", async () => {
     }
   }
 });
+
+/* ====== Set user's initials in Rep field ====== */
+function setUserInitialsInRepField() {
+  try {
+    const userInitials = localStorage.getItem('userInitials');
+    if (userInitials) {
+      // Find the Rep field element - check multiple possible selectors
+      let repField = document.getElementById('rep');
+      
+      // If not found by id, try to find by other common attributes
+      if (!repField) {
+        repField = document.querySelector('[name="rep"]');
+      }
+      
+      if (!repField) {
+        // Look for any input, select, or div that might be the Rep field
+        const possibleRepFields = document.querySelectorAll('input, select, div, span');
+        for (const field of possibleRepFields) {
+          // Check if the field label or placeholder contains "rep"
+          if ((field.placeholder && field.placeholder.toLowerCase().includes('rep')) ||
+              (field.previousElementSibling && field.previousElementSibling.textContent && 
+               field.previousElementSibling.textContent.toLowerCase().includes('rep'))) {
+            repField = field;
+            break;
+          }
+        }
+      }
+      
+      // One more attempt - look for any element that contains "Rep" text
+      if (!repField) {
+        const repContainer = Array.from(document.querySelectorAll('.box-header'))
+          .find(el => el && el.textContent && el.textContent.toLowerCase().includes('rep'));
+        
+        if (repContainer && repContainer.nextElementSibling) {
+          repField = repContainer.nextElementSibling.querySelector('.box-content') || 
+                    repContainer.nextElementSibling;
+        }
+      }
+      
+      // If we found the Rep field, set its value or text content
+      if (repField) {
+        if (repField.tagName === 'INPUT' || repField.tagName === 'SELECT') {
+          repField.value = userInitials;
+        } else if (repField.hasAttribute('contenteditable')) {
+          repField.textContent = userInitials;
+        } else {
+          repField.textContent = userInitials;
+        }
+        console.log('Set user initials:', userInitials);
+      } else {
+        console.warn('Rep field not found');
+      }
+    }
+  } catch (error) {
+    console.error('Error setting user initials:', error);
+  }
+}
