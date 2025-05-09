@@ -1,6 +1,34 @@
+// Check authentication before allowing access to the page
+function checkAuth() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const expiry = localStorage.getItem('loginExpiry');
+  const currentTime = new Date().getTime();
+  
+  // If not logged in or login expired, redirect to login page
+  if (isLoggedIn !== 'true' || !expiry || currentTime > parseInt(expiry)) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  
+  return true;
+}
+
+// Logout function
+function logout() {
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('username');
+  localStorage.removeItem('loginExpiry');
+  window.location.href = 'login.html';
+}
+
 /*************************************************************************
  *  101 Doors & Windows – Estimate Generator (with nested dropdowns)
  *************************************************************************/
+
+// Run auth check immediately
+if (!checkAuth()) {
+  throw new Error("Authentication required");
+}
 
 //
 // ─────────────────  PRODUCT CATALOG  ─────────────────
