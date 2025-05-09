@@ -989,7 +989,6 @@ downloadBtn.addEventListener("click", async () => {
       console.log(progressText);
     }
     
-    updateProgress("Processing header");
     // Capture header elements
     const headerCanvas = await html2canvas(header, { 
       scale: 2, 
@@ -1006,7 +1005,6 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(headerImgData, 'PNG', 0, 0, headerImgWidth, headerImgHeight);
     let currentY = headerImgHeight + 5;
     
-    updateProgress("Processing customer details");
     // Add order details
     const orderCanvas = await html2canvas(orderDetails, { 
       scale: 2, 
@@ -1022,7 +1020,6 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(orderImgData, 'PNG', 0, currentY, orderImgWidth, orderImgHeight);
     currentY += orderImgHeight + 5;
     
-    updateProgress("Processing address");
     // Add customer section
     const customerCanvas = await html2canvas(customerSection, { 
       scale: 2, 
@@ -1038,7 +1035,6 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(customerImgData, 'PNG', 0, currentY, customerImgWidth, customerImgHeight);
     currentY += customerImgHeight + 5;
     
-    updateProgress("Processing project info");
     // Add PO project section
     const poCanvas = await html2canvas(poProjectSection, { 
       scale: 2, 
@@ -1054,7 +1050,6 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(poImgData, 'PNG', 0, currentY, poImgWidth, poImgHeight);
     currentY += poImgHeight + 10;
     
-    updateProgress("Processing table header");
     // Add table header
     const tableHeader = document.querySelector("#estimate-table thead");
     const thCanvas = await html2canvas(tableHeader, { 
@@ -1073,7 +1068,6 @@ downloadBtn.addEventListener("click", async () => {
     
     // Process each row individually
     for (let i = 0; i < rows.length; i++) {
-      updateProgress(`Processing item ${i+1}/${rows.length}`);
       
       // Check if we need a new page
       if (currentY > pageHeight - 30) {
@@ -1109,7 +1103,6 @@ downloadBtn.addEventListener("click", async () => {
       currentY += rowImgHeight;
     }
     
-    updateProgress("Saving PDF");
     // Save the PDF
     pdf.save(filename);
     
