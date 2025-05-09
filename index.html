@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="101 Doors &amp; Windows - Estimate creator for interior door replacement projects">
+  <meta name="author" content="101 Doors &amp; Windows">
   <title>101 Doors &amp; Windows – Estimate Generator</title>
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon.ico">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -380,7 +385,10 @@
       <!-- ────────── ACTION BUTTONS ────────── -->
       <div class="actions">
         <button id="generate-estimate">Print Estimate</button>
-        <button id="download-pdf">Download PDF</button>
+        <div class="filename-container">
+          <input type="text" id="pdf-filename" placeholder="PDF Filename" title="Enter custom filename for PDF">
+          <button id="download-pdf">Download PDF</button>
+        </div>
         <button id="clear-estimate">Clear Estimate</button>
       </div>
 

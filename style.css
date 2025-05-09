@@ -27,6 +27,46 @@
     line-height: 1.4;
     padding: 0;
     font-size: 12px;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  /* ───────────────
+     Loading Indicator
+     ─────────────── */
+  body.loading {
+    overflow: hidden;
+  }
+  
+  body.loading:after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+  }
+  
+  body.loading:before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
+    border-radius: 50%;
+    border: 5px solid var(--accent-light);
+    border-top-color: var(--accent);
+    animation: spinner 0.8s linear infinite;
+    z-index: 10000;
+  }
+  
+  @keyframes spinner {
+    to {transform: rotate(360deg);}
   }
   
   /* ───────────────
@@ -102,6 +142,7 @@
     padding: 3px 8px;
     font-size: 11px;
     cursor: pointer;
+    transition: background 0.2s ease;
   }
 
   .logout-btn:hover {
@@ -386,12 +427,35 @@
     border-top: 1px solid var(--border);
   }
 
+  /* Filename input container */
+  .filename-container {
+    display: flex;
+    flex: 1;
+    gap: 5px;
+  }
+
+  #pdf-filename {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 12px;
+    transition: border-color 0.2s ease;
+  }
+
+  #pdf-filename:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
   #generate-estimate {
     background: var(--accent);
   }
 
   #download-pdf {
     background: var(--success);
+    white-space: nowrap;
   }
 
   #clear-estimate {
@@ -481,5 +545,113 @@
   .dropdown-content details details > summary {
     font-weight: normal;
     background: #f8f8f8;
+  }
+
+  /* ═════════════════════════════
+     Responsive improvements
+     ═════════════════════════════ */
+     
+  /* General responsive adjustments */
+  @media (max-width: 768px) {
+    .container {
+      margin: 20px auto;
+      padding: 0 10px;
+    }
+    
+    .invoice-header {
+      flex-direction: column;
+    }
+    
+    .logo-section img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+    
+    .order-type {
+      text-align: left;
+      margin-top: 10px;
+    }
+    
+    .order-type h1 {
+      text-align: left;
+    }
+    
+    .user-controls {
+      justify-content: flex-start;
+      margin-top: 5px;
+    }
+    
+    .order-info-row,
+    .customer-section,
+    .po-project-section {
+      flex-direction: column;
+    }
+    
+    .order-info-box,
+    .customer-info,
+    .shipping-info,
+    .po-section,
+    .project-section {
+      width: 100%;
+      margin: 0 0 10px 0;
+    }
+    
+    #product-form {
+      padding: 10px;
+    }
+    
+    .form-group {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .form-group label {
+      margin-bottom: 5px;
+    }
+    
+    .dropdown > button {
+      width: 100%;
+      margin-top: 5px;
+    }
+    
+    .dropdown-content {
+      width: 100%;
+      left: 0;
+      right: 0;
+    }
+    
+    .actions {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .actions button {
+      flex: 1 0 calc(50% - 10px);
+      margin-bottom: 5px;
+    }
+    
+    .filename-container {
+      flex: 1 0 100%;
+      order: -1;
+      margin-bottom: 5px;
+    }
+  }
+  
+  /* Very small screens */
+  @media (max-width: 480px) {
+    .actions button {
+      flex: 1 0 100%;
+    }
+    
+    .invoice-table th,
+    .invoice-table td {
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+    
+    .invoice-table td img {
+      max-width: 100px;
+      max-height: 100px;
+    }
   }
   

@@ -30,6 +30,10 @@ if (!checkAuth()) {
   throw new Error("Authentication required");
 }
 
+// Global variables
+let items = [];
+let isDirty = false;  // Flag to track unsaved changes
+
 //
 // ─────────────────  PRODUCT CATALOG  ─────────────────
 //   Keys must match the checkbox `value` attributes.
@@ -256,210 +260,655 @@ const hwCont    = document.getElementById("hardwareDropdownContent");
   [baseBtn,  baseCont],
   [hwBtn,    hwCont]
 ].forEach(([btn, cont]) => {
-  btn.addEventListener("click", () => cont.classList.toggle("show"));
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    
+    // Close any other open dropdowns first
+    document.querySelectorAll(".dropdown-content.show").forEach(el => {
+      if (el !== cont) el.classList.remove("show");
+    });
+    
+    // Toggle this dropdown
+    const isOpen = cont.classList.toggle("show");
+    
+    // If opening this dropdown, close all open sub-dropdowns
+    if (isOpen) {
+      cont.querySelectorAll("details").forEach(detail => {
+        detail.open = false;
+      });
+    }
+  });
 });
+
 window.addEventListener("click", e => {
-  if (!e.target.closest(".dropdown")) {
+  // If clicked element is not part of a dropdown or a summary element
+  if (!e.target.closest(".dropdown") && !e.target.matches("summary")) {
+    // Close all dropdowns
     document.querySelectorAll(".dropdown-content").forEach(c => c.classList.remove("show"));
+  }
+  
+  // If clicked outside details but inside dropdown-content, don't close the dropdown
+  if (!e.target.closest("details") && !e.target.matches("summary") && e.target.closest(".dropdown-content")) {
+    e.stopPropagation(); // Prevent closing the main dropdown
   }
 });
 
-/* ====== Storage & table ====== */
-let items = [];
+// Add event listener for details elements to prevent dropdown closing
+document.querySelectorAll(".dropdown-content details").forEach(detail => {
+  detail.addEventListener("click", e => {
+    // If clicking on a summary element (the dropdown header)
+    if (e.target.matches("summary")) {
+      const clickedDetails = e.target.closest("details");
+      const parent = clickedDetails.parentElement;
+      
+      // If this is a nested details within another details
+      if (parent.closest("details")) {
+        // Don't propagate to parent details to prevent them from closing
+        e.stopPropagation();
+      }
+      
+      // Close sibling details at the same level
+      parent.querySelectorAll("details").forEach(otherDetail => {
+        if (otherDetail !== clickedDetails && !otherDetail.contains(clickedDetails) && !clickedDetails.contains(otherDetail)) {
+          otherDetail.open = false;
+          
+          // Also close any nested details inside this sibling
+          otherDetail.querySelectorAll("details").forEach(nestedDetail => {
+            nestedDetail.open = false;
+          });
+        }
+      });
+    }
+    
+    // Don't let clicks inside details bubble up to close main dropdown
+    e.stopPropagation();
+  });
+});
+
+/* ====== DOM Content Loaded ====== */
 window.addEventListener("DOMContentLoaded", () => {
-  const saved = localStorage.getItem("estimateItems");
-  if (saved) {
-    items = JSON.parse(saved);
-    items.forEach(addRowToTable);
+  try {
+    // Show loading spinner or indicator
+    document.body.classList.add('loading');
+    
+    // Test localStorage before proceeding
+    if (typeof localStorage === 'undefined') {
+      throw new Error('localStorage is not available');
+    }
+    
+    // Try a test write to localStorage
+    const testStorage = () => {
+      const testKey = '__test_storage';
+      try {
+        localStorage.setItem(testKey, '1');
+        if (localStorage.getItem(testKey) !== '1') {
+          throw new Error('Storage test failed');
+        }
+        localStorage.removeItem(testKey);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+    
+    if (!testStorage()) {
+      throw new Error('Cannot access localStorage. Please check your browser settings.');
+    }
+    
+    // Initialize items array if not already defined
+    window.items = window.items || [];
+    
+    // Load saved items
+    const saved = localStorage.getItem("estimateItems");
+    if (saved) {
+      try {
+        const parsedItems = JSON.parse(saved);
+        if (Array.isArray(parsedItems)) {
+          window.items = parsedItems;
+          
+          // Check if tableBody exists before adding rows
+          const tableBodyEl = document.querySelector("#estimate-table tbody");
+          if (tableBodyEl) {
+            parsedItems.forEach(item => addRowToTable(item));
+          } else {
+            console.warn("Table body element not found");
+          }
+        } else {
+          console.warn("Saved items is not an array");
+        }
+      } catch (parseError) {
+        console.error("Error parsing saved items:", parseError);
+      }
+    }
+    
+    // Set the estimate date fields
+    setEstimateDates();
+    
+    // Make the estimate details editable
+    setupEditableFields();
+    
+    // Add keyboard shortcuts
+    setupKeyboardShortcuts();
+    
+    // Setup browser alerts for unsaved changes
+    setupUnsavedChangesAlert();
+    
+    // Setup default PDF filename
+    setupDefaultPdfFilename();
+  } catch (error) {
+    console.error("Error initializing application:", error);
+    showErrorModal("Application Error", 
+      "There was an error loading the application.", 
+      error.message || 'Unknown error');
+  } finally {
+    // Hide loading spinner
+    document.body.classList.remove('loading');
   }
-  
-  // Set the estimate date fields
-  setEstimateDates();
-  
-  // Make the estimate details editable
-  setupEditableFields();
 });
 
 /* ====== Set default date for estimate ====== */
 function setEstimateDates() {
-  // Only set a default date if the field is empty
-  if (document.getElementById('estimate-date').textContent.trim() === '') {
-    const now = new Date();
-    const dateFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    const currentDate = now.toLocaleDateString('en-US', dateFormatOptions);
-    document.getElementById('estimate-date').textContent = currentDate;
+  try {
+    // Only set a default date if the field exists and is empty
+    const estimateDateEl = document.getElementById('estimate-date');
+    if (estimateDateEl && estimateDateEl.textContent.trim() === '') {
+      const now = new Date();
+      const dateFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      const currentDate = now.toLocaleDateString('en-US', dateFormatOptions);
+      estimateDateEl.textContent = currentDate;
+    }
+    
+    // Auto-generate estimate number if element exists and is empty
+    const estimateNumberEl = document.getElementById('estimate-number');
+    if (estimateNumberEl && estimateNumberEl.textContent.trim() === '') {
+      const now = new Date();
+      const estNumber = `EST-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+      estimateNumberEl.textContent = estNumber;
+    }
+  } catch (error) {
+    console.error("Error setting default dates:", error);
   }
-  
-  // We don't auto-generate the estimate number anymore as it's editable
 }
 
 /* ====== Setup editable customer fields ====== */
 function setupEditableFields() {
-  // Load any saved customer details from localStorage
-  const savedDetails = localStorage.getItem("estimateDetails");
-  if (savedDetails) {
-    const details = JSON.parse(savedDetails);
-    // Set customer details
-    document.getElementById('customer-name').textContent = details.name || 'Client Name';
-    document.getElementById('project-name').textContent = details.project || 'Interior Door Replacement';
-    document.getElementById('project-address').textContent = details.address || 'Customer Address';
-    
-    // Set estimate details if they exist
-    if (details.estimateNumber) {
-      document.getElementById('estimate-number').textContent = details.estimateNumber;
+  try {
+    // Load any saved customer details from localStorage
+    const savedDetails = localStorage.getItem("estimateDetails");
+    if (savedDetails) {
+      const details = JSON.parse(savedDetails);
+      
+      // Helper to safely set text content
+      const setTextContent = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = value || '';
+        }
+      };
+      
+      // Set customer details with null checks
+      setTextContent('customer-name', details.name || 'Client Name');
+      setTextContent('project-name', details.project || 'Interior Door Replacement');
+      setTextContent('project-address', details.address || 'Customer Address');
+      
+      // Set estimate details if they exist
+      if (details.estimateNumber) {
+        setTextContent('estimate-number', details.estimateNumber);
+      }
+      if (details.estimateDate) {
+        setTextContent('estimate-date', details.estimateDate);
+      }
     }
-    if (details.estimateDate) {
-      document.getElementById('estimate-date').textContent = details.estimateDate;
-    }
+  } catch (error) {
+    console.error("Error loading customer details:", error);
   }
   
   // Setup event listeners for all contenteditable elements
   const editableFields = document.querySelectorAll('[contenteditable="true"]');
   editableFields.forEach(field => {
-    field.addEventListener('blur', saveEstimateDetails);
-    field.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.blur();
-      }
-    });
+    if (field) {
+      field.addEventListener('blur', saveEstimateDetails);
+      field.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.blur();
+        }
+      });
+      
+      // Add placeholder effect
+      field.addEventListener('focus', function() {
+        if (this.textContent && (
+          this.textContent.includes('Client') || 
+          this.textContent.includes('Address') || 
+          this.textContent.includes('Interior'))
+        ) {
+          this.textContent = '';
+        }
+      });
+    }
   });
 }
 
 /* ====== Save all editable details to localStorage ====== */
 function saveEstimateDetails() {
-  const estimateDetails = {
-    name: document.getElementById('customer-name').textContent,
-    project: document.getElementById('project-name').textContent,
-    address: document.getElementById('project-address').textContent,
-    estimateNumber: document.getElementById('estimate-number').textContent,
-    estimateDate: document.getElementById('estimate-date').textContent
-  };
-  
-  localStorage.setItem("estimateDetails", JSON.stringify(estimateDetails));
+  try {
+    // Get elements with null checks
+    const customerNameEl = document.getElementById('customer-name');
+    const projectNameEl = document.getElementById('project-name');
+    const projectAddressEl = document.getElementById('project-address');
+    const estimateNumberEl = document.getElementById('estimate-number');
+    const estimateDateEl = document.getElementById('estimate-date');
+    
+    // Safely get text content with fallbacks
+    const getName = (el) => el && el.textContent ? el.textContent : '';
+    
+    const estimateDetails = {
+      name: getName(customerNameEl),
+      project: getName(projectNameEl),
+      address: getName(projectAddressEl),
+      estimateNumber: getName(estimateNumberEl),
+      estimateDate: getName(estimateDateEl)
+    };
+    
+    // Check if localStorage is available
+    if (typeof localStorage === 'undefined') {
+      throw new Error('localStorage is not available');
+    }
+    
+    // Check available space
+    const testKey = '__test_storage_space';
+    try {
+      // Try to fill storage to check availability (with a safer approach)
+      localStorage.setItem(testKey, 'test');
+      localStorage.removeItem(testKey);
+    } catch (e) {
+      console.warn('Storage space check: Limited space available');
+    }
+    
+    // Try to save details with catch for errors
+    localStorage.setItem("estimateDetails", JSON.stringify(estimateDetails));
+    
+    // Mark the document as having changes
+    isDirty = true;
+    
+    return true;
+  } catch (error) {
+    console.error("Error saving estimate details:", error);
+    
+    // Use the shared error modal
+    showErrorModal(
+      "Error Saving Changes", 
+      "There was an error saving your changes. Please try again.",
+      error.message || 'Unknown error'
+    );
+    
+    return false;
+  }
+}
+
+/* ====== Setup keyboard shortcuts ====== */
+function setupKeyboardShortcuts() {
+  document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + S to save/print
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      generateBtn.click();
+    }
+    
+    // Ctrl/Cmd + D to download PDF
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+      e.preventDefault();
+      downloadBtn.click();
+    }
+  });
+}
+
+/* ====== Setup alert for unsaved changes ====== */
+function setupUnsavedChangesAlert() {
+  window.addEventListener('beforeunload', function(e) {
+    if (isDirty) {
+      // Standard text shown regardless of returned string
+      const message = 'You have unsaved changes. Are you sure you want to leave?';
+      e.returnValue = message;
+      return message;
+    }
+  });
+}
+
+/* ====== Setup default PDF filename ====== */
+function setupDefaultPdfFilename() {
+  try {
+    const filenameInput = document.getElementById('pdf-filename');
+    if (!filenameInput) {
+      console.warn('PDF filename input not found');
+      return;
+    }
+    
+    // Set default filename based on customer and project name
+    function updateDefaultFilename() {
+      try {
+        const customerNameEl = document.getElementById('customer-name');
+        const projectNameEl = document.getElementById('project-name');
+        
+        if (!customerNameEl || !projectNameEl) {
+          console.warn('Customer or project name elements not found');
+          return;
+        }
+        
+        const customerName = customerNameEl.textContent || 'Client';
+        const projectName = projectNameEl.textContent || 'Project';
+        
+        // Only update if the field is empty or has the previous default value
+        if (!filenameInput.value || filenameInput._isDefault) {
+          filenameInput.value = `${customerName} - ${projectName}`.replace(/[\\/:*?"<>|]/g, '-');
+          filenameInput._isDefault = true;
+        }
+      } catch (err) {
+        console.error('Error updating default filename:', err);
+      }
+    }
+    
+    // Update filename when customer or project name changes
+    const customerNameEl = document.getElementById('customer-name');
+    const projectNameEl = document.getElementById('project-name');
+    
+    if (customerNameEl) {
+      customerNameEl.addEventListener('blur', updateDefaultFilename);
+    }
+    
+    if (projectNameEl) {
+      projectNameEl.addEventListener('blur', updateDefaultFilename);
+    }
+    
+    // Mark as custom when user changes the filename
+    filenameInput.addEventListener('input', function() {
+      this._isDefault = false;
+    });
+    
+    // Set initial default
+    updateDefaultFilename();
+  } catch (error) {
+    console.error('Error setting up PDF filename:', error);
+  }
 }
 
 /* ====== Handle form submit ====== */
 submitBtn.addEventListener("click", e => {
   e.preventDefault();
   
-  console.log("Add Selection button clicked");
-
-  const getChecked = (container) => {
-    return Array.from(container.querySelectorAll("input:checked")).map(cb => cb.value);
+  try {
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Adding...";
+    
+    const getChecked = (container) => {
+      return Array.from(container.querySelectorAll("input:checked")).map(cb => cb.value);
+    }
+  
+    const doorPicks = getChecked(doorCont).map(k => catalog.doorStyles[k] || null).filter(Boolean);
+    const basePicks = getChecked(baseCont).map(k => catalog.baseboard[k] || null).filter(Boolean);
+    const hwPicks = getChecked(hwCont).map(k => catalog.doorHardware[k] || null).filter(Boolean);
+    
+    console.log("Door picks:", doorPicks.length);
+    console.log("Baseboard picks:", basePicks.length);
+    console.log("Hardware picks:", hwPicks.length);
+    
+    const picks = [...doorPicks, ...basePicks, ...hwPicks];
+  
+    if (picks.length === 0) {
+      alert("Please select at least one item.");
+      return;
+    }
+  
+    picks.forEach(item => { 
+      console.log("Adding item:", item.name);
+      items.push(item); 
+      addRowToTable(item); 
+    });
+    
+    // Reset all checkboxes
+    document.querySelectorAll("#product-form input[type='checkbox']").forEach(checkbox => {
+      checkbox.checked = false;
+    });
+    
+    // Close any open dropdowns
+    document.querySelectorAll(".dropdown-content").forEach(dropdown => {
+      dropdown.classList.remove("show");
+    });
+    
+    // Try to save items - handle potential errors
+    try {
+      if (typeof localStorage === 'undefined') {
+        throw new Error('localStorage is not available');
+      }
+      
+      // Save items to localStorage
+      localStorage.setItem("estimateItems", JSON.stringify(items));
+      
+      // Mark as having unsaved changes
+      isDirty = true;
+    } catch (storageError) {
+      console.error("Error saving to localStorage:", storageError);
+      
+      // Create a modal dialog for the storage error
+      showErrorModal("Error Saving Items", 
+        "Your selections have been added to the current session, but could not be saved to browser storage. " +
+        "Your selections may be lost if you close the browser or reload the page.",
+        storageError.message || "Storage error");
+      
+      // Still continue since the items are in memory
+    }
+  } catch (error) {
+    console.error("Error adding items:", error);
+    showErrorModal("Error Adding Items", 
+      "There was an error adding the selected items.", 
+      error.message || "Unknown error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Add Selection";
   }
-
-  const doorPicks = getChecked(doorCont).map(k => catalog.doorStyles[k] || null).filter(Boolean);
-  const basePicks = getChecked(baseCont).map(k => catalog.baseboard[k] || null).filter(Boolean);
-  const hwPicks = getChecked(hwCont).map(k => catalog.doorHardware[k] || null).filter(Boolean);
-  
-  console.log("Door picks:", doorPicks.length);
-  console.log("Baseboard picks:", basePicks.length);
-  console.log("Hardware picks:", hwPicks.length);
-  
-  const picks = [...doorPicks, ...basePicks, ...hwPicks];
-
-  if (picks.length === 0) {
-    alert("Please select at least one item.");
-    return;
-  }
-
-  picks.forEach(item => { 
-    console.log("Adding item:", item.name);
-    items.push(item); 
-    addRowToTable(item); 
-  });
-  
-  // Reset all checkboxes
-  document.querySelectorAll("#product-form input[type='checkbox']").forEach(checkbox => {
-    checkbox.checked = false;
-  });
-  
-  // Close any open dropdowns
-  document.querySelectorAll(".dropdown-content").forEach(dropdown => {
-    dropdown.classList.remove("show");
-  });
-  
-  // Save items to localStorage
-  localStorage.setItem("estimateItems", JSON.stringify(items));
 });
+
+// Helper function to show error modals
+function showErrorModal(title, message, details) {
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = '9999';
+  
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'white';
+  content.style.padding = '20px';
+  content.style.borderRadius = '5px';
+  content.style.maxWidth = '90%';
+  content.style.textAlign = 'center';
+  
+  content.innerHTML = `
+    <h3>${title}</h3>
+    <p>${message}</p>
+    <p>Error details: ${details}</p>
+    <button id="ok-error-btn" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">OK</button>
+  `;
+  
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  
+  document.getElementById('ok-error-btn').addEventListener('click', function() {
+    document.body.removeChild(modal);
+  });
+}
 
 /* ====== Add a row ====== */
 function addRowToTable(item) {
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td><img src="${item.image}" alt="${item.name}"></td>
-    <td class="description-cell" title="Click to edit">${item.name}</td>
-    <td><button class="delete-btn">Delete</button></td>
-  `;
-  
-  // Make the description editable on click
-  const descriptionCell = row.querySelector(".description-cell");
-  descriptionCell.style.cursor = "pointer";
-  
-  descriptionCell.addEventListener("click", function() {
-    // Create input element if we're not already editing
-    if (!this.querySelector("input")) {
-      const currentText = this.textContent;
-      this.innerHTML = `<input type="text" value="${currentText}" class="edit-description" style="width: 100%">`;
-      const input = this.querySelector("input");
-      input.focus();
-      input.select();
-      
-      // Save on blur or Enter key
-      input.addEventListener("blur", finishEditing);
-      input.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-          finishEditing.call(this);
-        }
-      });
-      
-      function finishEditing() {
-        const newValue = this.value.trim();
-        if (newValue) {
-          this.parentNode.textContent = newValue;
-          
-          // Update the item in our items array (for localStorage)
-          const index = Array.from(tableBody.children).indexOf(row);
-          if (index !== -1 && items[index]) {
-            // Store original name but display edited name
-            if (!items[index].originalName) {
-              items[index].originalName = items[index].name;
+  try {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><img src="${item.image}" alt="${item.name}" loading="lazy"></td>
+      <td class="description-cell" title="Click to edit">${item.name}</td>
+      <td><button class="delete-btn">Delete</button></td>
+    `;
+    
+    // Make the description editable on click
+    const descriptionCell = row.querySelector(".description-cell");
+    descriptionCell.style.cursor = "pointer";
+    
+    descriptionCell.addEventListener("click", function() {
+      // Create input element if we're not already editing
+      if (!this.querySelector("input")) {
+        const currentText = this.textContent;
+        this.innerHTML = `<input type="text" value="${currentText}" class="edit-description" style="width: 100%">`;
+        const input = this.querySelector("input");
+        input.focus();
+        input.select();
+        
+        // Save on blur or Enter key
+        input.addEventListener("blur", finishEditing);
+        input.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            finishEditing.call(this);
+          }
+        });
+        
+        function finishEditing() {
+          try {
+            const newValue = this.value.trim();
+            if (newValue) {
+              this.parentNode.textContent = newValue;
+              
+              // Update the item in our items array (for localStorage)
+              const index = Array.from(tableBody.children).indexOf(row);
+              if (index !== -1 && items[index]) {
+                // Store original name but display edited name
+                if (!items[index].originalName) {
+                  items[index].originalName = items[index].name;
+                }
+                items[index].name = newValue;
+                
+                // Try to save to localStorage with error handling
+                try {
+                  localStorage.setItem("estimateItems", JSON.stringify(items));
+                  
+                  // Mark as having unsaved changes
+                  isDirty = true;
+                } catch (storageError) {
+                  console.error("Error saving edited item to localStorage:", storageError);
+                  
+                  // Show error but don't disrupt the edit
+                  showErrorModal("Error Saving Changes", 
+                    "Your edit was applied but could not be saved permanently. The changes may be lost if you close the browser.",
+                    storageError.message || "Storage error");
+                }
+              }
             }
-            items[index].name = newValue;
-            localStorage.setItem("estimateItems", JSON.stringify(items));
+          } catch (error) {
+            console.error("Error saving edited description:", error);
+            showErrorModal("Error Saving Description", 
+              "There was an error saving your changes.",
+              error.message || "Unknown error");
           }
         }
       }
-    }
-  });
-  
-  // Add delete functionality
-  row.querySelector(".delete-btn").addEventListener("click", () => {
-    const index = Array.from(tableBody.children).indexOf(row);
-    if (index !== -1) {
-      items.splice(index, 1);
-      localStorage.setItem("estimateItems", JSON.stringify(items));
-    }
-    row.remove();
-  });
-  
-  tableBody.appendChild(row);
+    });
+    
+    // Add delete functionality
+    row.querySelector(".delete-btn").addEventListener("click", () => {
+      if (confirm("Are you sure you want to remove this item?")) {
+        try {
+          const index = Array.from(tableBody.children).indexOf(row);
+          if (index !== -1) {
+            items.splice(index, 1);
+            
+            // Try to save to localStorage with error handling
+            try {
+              localStorage.setItem("estimateItems", JSON.stringify(items));
+              
+              // Mark as having unsaved changes
+              isDirty = true;
+            } catch (storageError) {
+              console.error("Error saving after delete to localStorage:", storageError);
+              
+              // Show error but continue with UI update
+              showErrorModal("Error Saving Changes", 
+                "The item was removed from the current view but this change couldn't be saved permanently.", 
+                storageError.message || "Storage error");
+            }
+          }
+          row.remove();
+        } catch (error) {
+          console.error("Error removing item:", error);
+          showErrorModal("Error Removing Item", 
+            "There was an error removing the item.",
+            error.message || "Unknown error");
+        }
+      }
+    });
+    
+    tableBody.appendChild(row);
+  } catch (error) {
+    console.error("Error adding row to table:", error);
+    showErrorModal("Error Adding Item", 
+      "There was an error displaying an item. Please refresh and try again.",
+      error.message || "Unknown error");
+  }
 }
 
 /* ====== Print, Clear, Download ====== */
-generateBtn.addEventListener("click", () => window.print());
-clearBtn.addEventListener("click", () => {
-  if (confirm("Clear all selections?")) {
-    items = [];
-    tableBody.innerHTML = "";
-    localStorage.removeItem("estimateItems");
+generateBtn.addEventListener("click", () => {
+  try {
+    // Clear the isDirty flag as we're saving/printing
+    isDirty = false;
+    window.print();
+  } catch (error) {
+    console.error("Error generating print view:", error);
+    alert("There was an error generating the print view. Please try again.");
   }
 });
 
+clearBtn.addEventListener("click", () => {
+  if (confirm("Are you sure you want to clear all selections? This cannot be undone.")) {
+    try {
+      items = [];
+      tableBody.innerHTML = "";
+      localStorage.removeItem("estimateItems");
+      
+      // Mark as having unsaved changes
+      isDirty = false;  // No items to save anymore
+    } catch (error) {
+      console.error("Error clearing items:", error);
+      alert("There was an error clearing the items. Please try again.");
+    }
+  }
+});
+
+// PDF Download function
 downloadBtn.addEventListener("click", async () => {
-  const hide = (sel) => document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
-  const show = (sel) => document.querySelectorAll(sel).forEach(el => el.style.display = '');
+  // Show loading state
+  if (downloadBtn) {
+    downloadBtn.disabled = true;
+    // downloadBtn.textContent = "Generating PDF...";
+    const originalText = downloadBtn.textContent;
+  }
+  
+  const hide = (sel) => {
+    const elements = document.querySelectorAll(sel);
+    if (elements && elements.length) {
+      elements.forEach(el => { if (el) el.style.display = 'none'; });
+    }
+  };
+  
+  const show = (sel) => {
+    const elements = document.querySelectorAll(sel);
+    if (elements && elements.length) {
+      elements.forEach(el => { if (el) el.style.display = ''; });
+    }
+  };
 
   // Hide elements not needed in PDF
   hide(".delete-btn");
@@ -467,31 +916,83 @@ downloadBtn.addEventListener("click", async () => {
   hide("#estimate-table td:nth-child(3)");
   hide(".actions");
   hide("#product-form");
+  hide(".user-controls");
   
   try {
-    // Get customer info for the filename
-    const customerName = document.getElementById('customer-name').textContent.replace(/\s+/g, '_');
-    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const estimateNum = document.getElementById('estimate-number').textContent;
-    const filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
+    // Get custom filename if provided, otherwise generate one
+    const filenameInput = document.getElementById('pdf-filename');
+    let filename = 'estimate.pdf'; // Default fallback
+    
+    if (filenameInput && filenameInput.value && filenameInput.value.trim() !== '') {
+      // Use custom filename, ensure it has .pdf extension
+      filename = filenameInput.value.trim();
+      if (!filename.toLowerCase().endsWith('.pdf')) {
+        filename += '.pdf';
+      }
+    } else {
+      // Fallback to generated filename format
+      const customerNameEl = document.getElementById('customer-name');
+      const estimateNumEl = document.getElementById('estimate-number');
+      
+      const customerName = customerNameEl && customerNameEl.textContent ? 
+        customerNameEl.textContent.replace(/\s+/g, '_') : 'Client';
+      
+      const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const estimateNum = estimateNumEl && estimateNumEl.textContent ? 
+        estimateNumEl.textContent : 'EST';
+      
+      filename = `Estimate_${estimateNum}_${customerName}_${date}.pdf`;
+    }
+    
+    // Replace invalid characters for filenames
+    filename = filename.replace(/[\\/:*?"<>|]/g, '-');
     
     // Initialize jsPDF
     const { jsPDF } = window.jspdf;
+    if (!jsPDF) {
+      throw new Error('PDF library not loaded');
+    }
+    
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     
-    // Get all table rows to process them individually
+    // Safely get elements
     const rows = document.querySelectorAll("#estimate-table tbody tr");
     
-    // Add header content first
+    // Get header elements with null checks
     const header = document.querySelector(".invoice-header");
     const orderDetails = document.querySelector(".order-details");
     const customerSection = document.querySelector(".customer-section");
     const poProjectSection = document.querySelector(".po-project-section");
     
+    if (!header || !orderDetails || !customerSection || !poProjectSection) {
+      throw new Error('Required page sections not found');
+    }
+    
+    // Add progress feedback
+    const totalOperations = 5 + (rows ? rows.length : 0);
+    let currentOperation = 0;
+    
+    function updateProgress(operation) {
+      currentOperation++;
+      const progressText = `${operation} (${Math.round((currentOperation/totalOperations) * 100)}%)`;
+      
+      if (downloadBtn) {
+        downloadBtn.textContent = progressText;
+      }
+      
+      console.log(progressText);
+    }
+    
+    updateProgress("Processing header");
     // Capture header elements
-    const headerCanvas = await html2canvas(header, { scale: 2, useCORS: true });
+    const headerCanvas = await html2canvas(header, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
     const headerImgData = headerCanvas.toDataURL("image/png");
     const headerImgProps = pdf.getImageProperties(headerImgData);
     const headerImgWidth = pageWidth;
@@ -501,8 +1002,14 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(headerImgData, 'PNG', 0, 0, headerImgWidth, headerImgHeight);
     let currentY = headerImgHeight + 5;
     
+    updateProgress("Processing customer details");
     // Add order details
-    const orderCanvas = await html2canvas(orderDetails, { scale: 2, useCORS: true });
+    const orderCanvas = await html2canvas(orderDetails, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true 
+    });
     const orderImgData = orderCanvas.toDataURL("image/png");
     const orderImgProps = pdf.getImageProperties(orderImgData);
     const orderImgWidth = pageWidth;
@@ -511,8 +1018,14 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(orderImgData, 'PNG', 0, currentY, orderImgWidth, orderImgHeight);
     currentY += orderImgHeight + 5;
     
+    updateProgress("Processing address");
     // Add customer section
-    const customerCanvas = await html2canvas(customerSection, { scale: 2, useCORS: true });
+    const customerCanvas = await html2canvas(customerSection, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
     const customerImgData = customerCanvas.toDataURL("image/png");
     const customerImgProps = pdf.getImageProperties(customerImgData);
     const customerImgWidth = pageWidth;
@@ -521,8 +1034,14 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(customerImgData, 'PNG', 0, currentY, customerImgWidth, customerImgHeight);
     currentY += customerImgHeight + 5;
     
+    updateProgress("Processing project info");
     // Add PO project section
-    const poCanvas = await html2canvas(poProjectSection, { scale: 2, useCORS: true });
+    const poCanvas = await html2canvas(poProjectSection, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
     const poImgData = poCanvas.toDataURL("image/png");
     const poImgProps = pdf.getImageProperties(poImgData);
     const poImgWidth = pageWidth;
@@ -531,9 +1050,15 @@ downloadBtn.addEventListener("click", async () => {
     pdf.addImage(poImgData, 'PNG', 0, currentY, poImgWidth, poImgHeight);
     currentY += poImgHeight + 10;
     
+    updateProgress("Processing table header");
     // Add table header
     const tableHeader = document.querySelector("#estimate-table thead");
-    const thCanvas = await html2canvas(tableHeader, { scale: 2, useCORS: true });
+    const thCanvas = await html2canvas(tableHeader, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
     const thImgData = thCanvas.toDataURL("image/png");
     const thImgProps = pdf.getImageProperties(thImgData);
     const thImgWidth = pageWidth;
@@ -544,6 +1069,8 @@ downloadBtn.addEventListener("click", async () => {
     
     // Process each row individually
     for (let i = 0; i < rows.length; i++) {
+      updateProgress(`Processing item ${i+1}/${rows.length}`);
+      
       // Check if we need a new page
       if (currentY > pageHeight - 30) {
         pdf.addPage();
@@ -554,7 +1081,12 @@ downloadBtn.addEventListener("click", async () => {
       }
       
       // Capture the row
-      const rowCanvas = await html2canvas(rows[i], { scale: 2, useCORS: true });
+      const rowCanvas = await html2canvas(rows[i], { 
+        scale: 2, 
+        useCORS: true,
+        logging: false,
+        allowTaint: true
+      });
       const rowImgData = rowCanvas.toDataURL("image/png");
       const rowImgProps = pdf.getImageProperties(rowImgData);
       const rowImgWidth = pageWidth;
@@ -573,12 +1105,18 @@ downloadBtn.addEventListener("click", async () => {
       currentY += rowImgHeight;
     }
     
+    updateProgress("Saving PDF");
     // Save the PDF
     pdf.save(filename);
     
+    // Clear the isDirty flag since we've effectively saved
+    isDirty = false;
+    
   } catch (error) {
     console.error("Error generating PDF:", error);
-    alert("There was an error generating the PDF. Please try again.");
+    showErrorModal("Error Generating PDF", 
+      "There was an error generating the PDF. Please try again.", 
+      error.message || "Unknown error");
   } finally {
     // Restore hidden elements
     show(".delete-btn");
@@ -586,5 +1124,14 @@ downloadBtn.addEventListener("click", async () => {
     show("#estimate-table td:nth-child(3)");
     show(".actions");
     show("#product-form");
+    show(".user-controls");
+    
+    // Reset button state
+    if (downloadBtn) {
+      downloadBtn.disabled = false;
+      if (typeof originalText !== 'undefined') {
+        downloadBtn.textContent = originalText;
+      }
+    }
   }
 });

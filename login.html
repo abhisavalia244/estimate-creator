@@ -2,11 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>101 Doors &amp; Windows – Login</title>
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: #ffffff;
+      --border: #ccc;
+      --accent: #000000;
+      --accent-light: #f2f2f2;
+      --text: #333333;
+      --text-light: #666666;
+      --success: #2d6a4f;
+      --danger: #8B0000;
+      --input-border: #ccc;
+      --input-focus: #555;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
       display: flex;
@@ -16,16 +39,18 @@
     }
     
     .login-container {
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      border-radius: 5px;
-      padding: 30px;
-      width: 350px;
+      background: var(--card-bg);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 40px;
+      width: 380px;
+      max-width: 90%;
       text-align: center;
+      transition: all 0.3s ease;
     }
     
     .logo {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     
     .logo img {
@@ -35,52 +60,103 @@
     
     h1 {
       font-size: 24px;
-      margin-bottom: 20px;
-      color: #333;
+      margin-bottom: 25px;
+      color: var(--text);
+      font-weight: 600;
     }
     
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       text-align: left;
+      position: relative;
     }
     
     label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-weight: 600;
-      color: #555;
+      color: var(--text);
+      font-size: 14px;
     }
     
     input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      border: 1px solid var(--input-border);
       border-radius: 4px;
       font-size: 14px;
-      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 2px rgba(85,85,85,0.2);
+    }
+    
+    input.error {
+      border-color: var(--danger);
+      background-color: rgba(139, 0, 0, 0.05);
     }
     
     button {
-      background: #000;
+      background: var(--accent);
       color: white;
       border: none;
       border-radius: 4px;
-      padding: 12px 20px;
+      padding: 14px 20px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       width: 100%;
       margin-top: 10px;
+      transition: background 0.2s ease;
     }
     
     button:hover {
       background: #333;
     }
     
+    button:disabled {
+      background: #777;
+      cursor: not-allowed;
+    }
+    
     .error-message {
-      color: #d9534f;
+      color: var(--danger);
       margin-top: 15px;
       font-size: 14px;
       display: none;
+      text-align: center;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: rgba(139, 0, 0, 0.05);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+      
+      .logo img {
+        max-width: 200px;
+      }
+      
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+    }
+    
+    /* Animation for login container */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .login-container {
+      animation: fadeIn 0.4s ease-out;
     }
   </style>
 </head>
@@ -93,11 +169,11 @@
     <form id="login-form">
       <div class="input-group">
         <label for="username">Username</label>
-        <input type="text" id="username" required>
+        <input type="text" id="username" autocomplete="username" required>
       </div>
       <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required>
+        <input type="password" id="password" autocomplete="current-password" required>
       </div>
       <button type="submit">Login</button>
       <div id="error-message" class="error-message">
